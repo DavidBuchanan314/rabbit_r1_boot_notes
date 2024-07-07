@@ -9,6 +9,7 @@ This is a living document.
 
 There are soooo many acronyms and abbreviations, so here's a big list for reference:
 
+- `ATF`, `TF-A`: [ARM Trusted Firmware](https://community.arm.com/oss-platforms/w/docs/483/trusted-firmware-a)
 - `brom`: bootrom
 - `BSP`: Board Support Package
 - `EL0`, `EL1`, `EL2`, `EL3`: [ARM Exeption Levels](https://developer.arm.com/documentation/102412/0103/Privilege-and-Exception-levels/Exception-levels)
