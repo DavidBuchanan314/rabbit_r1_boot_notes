@@ -33,6 +33,8 @@ The next stage is the Preloader, which is stored in the `boot0` partition of eMM
 
 Preloader is loaded into memory at offset `0x200f10`, with entrypoint at `0x201000`. The CPU is still in a 32-bit mode here.
 
+The Preloader's stack spans from `0x200000` to `0x200c00`.
+
 The Preloader is responsible for showing the initial boot logo, charging animations, etc. (logo image data is stored in the `logo` GPT partition)
 
 # References
