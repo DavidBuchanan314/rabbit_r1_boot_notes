@@ -20,7 +20,9 @@ There are soooo many acronyms and abbreviations, so here's a big list for refere
 - `MT`, `MTK`: MediaTek
 - `mtkclient`: https://github.com/bkerler/mtkclient - "MTK reverse engineering and flash tool"
 - `Picachu`: "PI CAlibration and CHaracterization Utility" - "voltage calibration during booting" (What is PI? Power Input?)
+- `REE`: Rich Execution Environment
 - `SSPM`: "System Security Processor Manager", "Secure System Power Manager" (???)
+- `TEE`: Trusted Execution Environment
 
 # Boot Stages Overview
 
@@ -36,3 +38,4 @@ The Preloader is responsible for showing the initial boot logo, charging animati
 
 - https://juejin.cn/post/6844904089663307790 - Mediatek boot process overview (in Chinese)
 - https://research.nccgroup.com/2020/10/15/theres-a-hole-in-your-soc-glitching-the-mediatek-bootrom/
+- https://commoncriteriaportal.org/files/epfiles/NSCIB-CC-0486650-ST-v1.91.pdf
