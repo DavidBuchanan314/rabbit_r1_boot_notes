@@ -20,6 +20,7 @@ There are soooo many acronyms and abbreviations, so here's a big list for refere
 - `MT`, `MTK`: MediaTek
 - `mtkclient`: https://github.com/bkerler/mtkclient - "MTK reverse engineering and flash tool"
 - `Picachu`: "PI CAlibration and CHaracterization Utility" - "voltage calibration during booting" (What is PI? Power Input?)
+- `SSPM`: "System Security Processor Manager", "Secure System Power Manager" (???)
 
 # Boot Stages Overview
 
