@@ -14,6 +14,7 @@ There are soooo many acronyms and abbreviations, so here's a big list for refere
 - `EL0`, `EL1`, `EL2`, `EL3`: [ARM Exeption Levels](https://developer.arm.com/documentation/102412/0103/Privilege-and-Exception-levels/Exception-levels)
 - `GPT`: [GUID Partition Table](https://en.wikipedia.org/wiki/GUID_Partition_Table)
 - `GZ`: [GenieZone](https://patchwork.kernel.org/project/linux-mediatek/patch/20230919111210.19615-2-yi-de.wu@mediatek.com/), EL2 Hypervisor (not to be confused with gzip!)
+- `IPI`: InterProcessor Interrupt
 - `LK`: [Little Kernel](https://github.com/littlekernel/lk)
 - `magiskboot`: A component of [Magisk](https://github.com/topjohnwu/Magisk) for repacking android boot images (kernel, ramdisk). Also repackaged as a standalone tool [here](https://github.com/ookiineko/magiskboot_build).
 - `MT`, `MTK`: MediaTek
