@@ -42,3 +42,4 @@ The Preloader is responsible for showing the initial boot logo, charging animati
 - https://juejin.cn/post/6844904089663307790 - Mediatek boot process overview (in Chinese)
 - https://research.nccgroup.com/2020/10/15/theres-a-hole-in-your-soc-glitching-the-mediatek-bootrom/
 - https://commoncriteriaportal.org/files/epfiles/NSCIB-CC-0486650-ST-v1.91.pdf
+- https://gist.github.com/lopestom/ce250f5de64a2764ee85092a2c01939e - android partition name info
