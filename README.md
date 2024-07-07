@@ -18,7 +18,7 @@ There are soooo many acronyms and abbreviations, so here's a big list for refere
 - `magiskboot`: A component of [Magisk](https://github.com/topjohnwu/Magisk) for repacking android boot images (kernel, ramdisk). Also repackaged as a standalone tool [here](https://github.com/ookiineko/magiskboot_build).
 - `MT`, `MTK`: MediaTek
 - `mtkclient`: https://github.com/bkerler/mtkclient - "MTK reverse engineering and flash tool"
-- `Picachu`: "PI CAlibration and CHaracterization Utility" - "voltage calibration during booting" (TODO: what is PI?)
+- `Picachu`: "PI CAlibration and CHaracterization Utility" - "voltage calibration during booting" (What is PI? Power Input?)
 
 # Boot Stages Overview
 
