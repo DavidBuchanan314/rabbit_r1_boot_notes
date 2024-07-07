@@ -1,0 +1,315 @@
+NOTE: these were captured from two different sessions, first at 115200 baud (brom, I think), and then at 921600 baud (preloader onwards)
+(Also note, there are no Linux kernel logs by default, I enabled them by tweaking the args)
+
+*** baud: 115200 ***
+[DL] 00001388 00000000 010303
+
+F0: 102B 0000
+F3: 0000 0000 [0200]
+V0: 0000 0000 [0001]
+00: 1027 0001
+01: 0000 0000
+BP: 0800 0051 [0000]
+G0: 0090 0000
+EC: 0000 0000 [4001]
+CC: 0000 0000 [0001]
+T0: 0000 14A1 [000F]
+Jump to BL
+
+*** baud: 921600 ***
+PL_LOG_STORE: check once, sig value 0x427, addr 0x102000.
+PL_LOG_STORE:sram->sig value 0xABCD1234!
+T#Preloader Start=1
+[HT22] : 1 0x24 0x24 done
+0:0x80000000, 1:0x1200, 2:0x1, 3:0x80002, 4:0x40000000, STA:0x0, S:0x24, FAB0:0x6765, FAB11:0x0
+A:0x0, B:0x3F, C:0x40, D:0x1F, E:0x1, F:0x3, G:0x2
+DATE_CODE_YY:1, DATE_CODE_WW:1A
+[SegCode] Segment Code:0x24, PROJECT_CODE:0x0, FAB_CODE:0x2, RW_STA:0x0, CTL:0x0, DCM:0x7
+#T#DEVINFO=24
+Pll init start...
+Pll init Done!
+#T#PLL=2
+#T#GPIO=0
+[PWRAP] si_en_sel = 0, si_ck_sel = 0, si_sample_ctrl = 0, rdata = 96A9
+[PWRAP] si_en_sel = 0, si_ck_sel = 1, si_sample_ctrl = 20, rdata = 5AA5, Pass
+[PWRAP] InitSiStrobe (7, 7, 5845) Data Boundary Is Found !!
+[PWRAP] SI Strobe Calibration For PMIC 0 Done, (40, 7)
+[PWRAP] Read Test pass, return_value=0x0
+[PWRAP] Write Test pass
+[PWRAP] RECORD_CMD0:  0x1114 (Last one command addr)
+[PWRAP] RECORD_WDATA0:0x20 (Last one command wdata)
+[PWRAP] RECORD_CMD1:  0x1114 (Last second command addr)
+[PWRAP] RECORD_WDATA1:0x40 (Last second command wdata)
+[PWRAP] RECORD_CMD2:  0x19FA (Last third command addr)
+[PWRAP] RECORD_WDATA2:0x35 (Last third command wdata)
+[PWRAP] init pass, ret=0.
+
+#T#PWRAP=9
+#T#I2C=0
+[PMIC]Preloader Start
+[PMIC]MT6357 CHIP Code = 0x5730
+[PMIC]POWER_HOLD :0x1
+[PMIC]TOP_RST_STATUS[0x152]=0x4F
+[PMIC]PONSTS[0xC]=0x0
+[PMIC]POFFSTS[0xE]=0x400
+[PMIC]PGSTATUS0[0x14]=0xFFFE
+[PMIC]PSOCSTATUS[0x16]=0x0
+[PMIC]BUCK_OC_SDN_STATUS[0x1434]=0x0
+[PMIC]BUCK_OC_SDN_EN[0x1444]=0x1F1F
+[PMIC]THERMALSTATUS[0x18]=0x0
+[PMIC]STRUP_CON4[0xA1C]=0x0
+[PMIC]TOP_RST_MISC[0x14C]=0x204
+[PMIC]TOP_CLK_TRIM[0x38E]=0x6AC0
+latch VPROC 625000 uV
+latch VSRAM_PROC 850000 uV
+latch VSRAM_OTHERS 900000 uV
+latch VCORE 700000 uV
+latch VMODEM 800000 uV
+[pmic_check_rst] AP Watchdog
+[PMIC]just_rst = 0
+No EFUSE SW Load
+battery exists
+[PMIC]disable usbdl wo battery
+[PMIC]pmic_wdt_set Reg[0x14C]=0x225
+[rt5738_driver_probe]
+[rt5738_hw_component_detect] exist = 1, Chip ID = 0
+[rt5738_driver_probe] PL g_rt5738_0_hw_exist=1, g_rt5738_driver_ready=1
+[rt5738_hw_component_detect] exist = 1, Chip ID = 0
+[rt5738_driver_probe] PL g_rt5738_1_hw_exist=1, g_rt5738_driver_ready=1
+[hl7593_driver_probe]
+[hl7593_read_interface] Reg[3]=0x0
+[hl7593_read_interface] val=0x0
+[hl7593_read_interface] Reg[4]=0x0
+[hl7593_read_interface] val=0x0
+[hl7593_read_interface] Reg[5]=0x81
+[hl7593_read_interface] val=0x1
+PGOOD = 1, chip_id = 0
+[hl7593_hw_component_detect] exist = 0, Chip ID = 0
+[hl7593_driver_probe] PL hl7593_vdd2 is not exist
+[hl7593_read_interface] Reg[3]=0x0
+[hl7593_read_interface] val=0x0
+[hl7593_read_interface] Reg[4]=0x0
+[hl7593_read_interface] val=0x0
+[hl7593_read_interface] Reg[5]=0x81
+[hl7593_read_interface] val=0x1
+PGOOD = 1, chip_id = 0
+[hl7593_hw_component_detect] exist = 0, Chip ID = 0
+[hl7593_driver_probe] PL hl7593_vddq is not exist
+[fan53526_driver_probe]
+[I2C] id=3,addr: 60, transfer error
+[I2C] I2C_ACKERR
+[I2C] write_read 0x10001 bytes fails,ret=-121.
+[I2C] id=3,addr: 60, transfer error
+[I2C] I2C_ACKERR
+[I2C] write_read 0x10001 bytes fails,ret=-121.
+[I2C] id=3,addr: 60, transfer error
+[I2C] I2C_ACKERR
+[I2C] write_read 0x10001 bytes fails,ret=-121.
+[fan53526_hw_component_detect] exist = 0, Chip ID = 304
+[fan53526_driver_probe] PL fan53526_vdd2 is not exist
+[fan53526_hw_component_detect] exist = 0, Chip ID = 0
+[fan53526_driver_probe] PL fan53526_vddq is not exist
+register vs1 OK
+register vmodem OK
+register vcore OK
+register vproc OK
+register vpa OK
+register vsram_others OK
+register vsram_proc OK
+register vdram OK
+[PMIC]Init done
+#T#PMIC=35
+#T#PLL POST Init=0
+#T#Connsys=0
+[SD0] SET_CLK(260kHz): SCLK(259kHz) MODE(0) DDR(0) DIV(385) DS(0) RS(0)
+[SD0] SET_CLK(260kHz): SCLK(259kHz) MODE(2) DDR(1) DIV(192) DS(0) RS(0)
+[SD0] Size: 119276 MB, Max.Speed: 52000 kHz, blklen(512), nblks(244277248)
+[SD0] Initialized, eMMC45
+[SD0] SET_CLK(52000kHz): SCLK(50000kHz) MODE(2) DDR(1) DIV(1) DS(0) RS(0)
+#T#Boot dev init=205
+[PLFM] Init Boot Device: OK(0)
+metadata.slot_info[0].priority = 15, 14
+metadata.slot_info[0].retry = 1, 1
+#T#Long Pressed Reboot=19
+[PLFM] Init PWRAP: OK(0)
+[PLFM] Init PMIC: OK(0)
+[PLFM] chip_hw_ver[CA00], chip_sw_ver[0]
+aee enable 1
+RAM_CONSOLE wdt_status 0x0, fiq_step 0x0, exp_type 0x0
+clk_buf_dump_dts_log: PMIC_CLK_BUF?_STATUS=2 1 1 2 0 0 0
+clk_buf_dump_dts_log: PMIC_CLK_BUF?_DRV_CURR=1 1 1 1 1 1 1
+clk_buf_dump_clkbuf_log DCXO_CW00/02/11/13/14/15/16/20/top_spi_con1=0x4E1D 3AEE 8000 98E9 82B5 A2AA 9455 11 1
+clk_buf_dump_clkbuf_log DCXO_CW00/02/11/13/14/15/16/20/top_spi_con1=0x4E1D 3AEE 8000 98E9 82B5 A2AA 9455 11 0
+clk_buf_init_pmic_wrap: DCXO_CONN_ADR0/WDATA0/ADR1/WDATA1=0x44A/0/44A/1
+clk_buf_init_pmic_wrap: DCXO_NFC_ADR0/WDATA0/ADR1/WDATA1/EN=0x78C/100/78A/100/3
+[RTC]switch to dcxo
+[PMIC] pmic_init_setting end. v180104
+[MT6357] 1 1,48
+[MT6357] get volt 6, 61, 900000
+vsram_proc = 900000 uV
+[MT6357] get volt 3, 45, 800000
+vproc = 800000 uV
+[MT6357] get volt 5, 61, 900000
+vsram_others = 900000 uV
+[MT6357] get volt 2, 45, 800000
+vcore = 800000 uV
+[MT6357] get volt 1, 48, 800000
+vmodem = 800000 uV
+[MT6357] 2 5,1
+[MT6357] 2 6,1
+[MT6357] 2 3,1
+[MT6357] 2 2,1
+[MT6357] 2 1,1
+[DDR Reserve] ddr reserve mode not be enabled yet
+#T#chk DDR Reserve status=94
+Enter mtk_kpd_gpio_set! 
+after set KP enable: KP_SEL = 0x1C70 !
+#T#check Boot status-RTC=34
+#T#check Boot status-PMIC=0
+#T#check Boot status-WDT=0
+#T#check Boot status-PWR key=0
+[PMIC]IsUsbCableIn 1
+[PLFM] USB/charger boot!
+#T#check Boot status-usb_accessory_in=0
+#T#check Boot status=0
+[PMIC]POWER_HOLD :0x1
+[RTC]rtc_lpsd_solution
+#T#rtc_bbpu_power_on=2
+pl chr:1 monitor:1 plchr:1 gain:1036
+battery exists
+[pl_check_bat_protect_status]: check VBAT=4330mV with 0mV, VCHR=5270mV ,VCHR_HV=6500mv, start charging
+[pl_check_bat_protect_status]: check VBAT=4330mV with 0mV, stop charging
+#T#Enable PMIC Kpd clk=9
+mtk_kpd_gpio_set Already!
+mtk detect key function pmic_detect_homekey MTK_PMIC_RST_KEY = 17
+Log Turned Off.
+[ATF](0)[5.053018]INFO:    BOOT_REASON: 1
+[ATF](0)[5.054441]INFO:    IS_ABNORMAL_BOOT: 0
+[ATF](0)[5.054952]INFO:    RAM_CONSOLE_INFO: addr:0x10ea00, size:0x540, type:0x1, offset:0x7c0
+[ATF](0)[5.055983]INFO:    GZ CONFIGS = 0x2
+[ATF](0)[5.056467]INFO:    GZ RESERVE MEM SIZE = 0x800000
+[ATF](0)[5.057103]INFO:    GZ EXEC START OFFSET = 0x247800000
+[ATF](0)[5.057784]INFO:    CPUxGPT reg(0)
+[ATF](0)[5.058243]INFO:    [systimer] CNTCR_REG(0xd0d)
+[ATF](0)[5.058849]INFO:    Booting from EL2!
+[ATF](0)[5.059343]INFO:    GZ PARAMS = 0x11002000, 0x247800000, 0x800000
+[ATF](0)[5.060140]INFO:    bl31_plat_arch_setup()
+[ATF](0)[5.060691]INFO:    mmap atf buffer : 0xbff30000, 0x40000
+[ATF](0)[5.061872]INFO:    mmap ram_console: 0x10ea00, 0x540, (pmore:0x2000)
+[ATF](0)[5.074452]INFO:    mmap:
+[ATF](0)[5.074808]INFO:     VA:0x100000  PA:0x100000  size:0x1000  attr:0x8
+[ATF](0)[5.075637]INFO:     VA:0x10e000  PA:0x10e000  size:0x2000  attr:0x18
+[ATF](0)[5.076477]INFO:     VA:0x110000  PA:0x110000  size:0x1000  attr:0x18
+[ATF](0)[5.077317]INFO:     VA:0xc000000  PA:0xc000000  size:0x600000  attr:0x8
+[ATF](0)[5.078189]INFO:     VA:0x10006000  PA:0x10006000  size:0x100000  attr:0x8
+[ATF](0)[5.079083]INFO:     VA:0x10390000  PA:0x10390000  size:0x10000  attr:0x8
+[ATF](0)[5.079966]INFO:     VA:0x10000000  PA:0x10000000  size:0x400000  attr:0x8
+[ATF](0)[5.080860]INFO:     VA:0x10400000  PA:0x10400000  size:0x50000  attr:0x8
+[ATF](0)[5.081743]INFO:     VA:0x10480000  PA:0x10480000  size:0x10000  attr:0x8
+[ATF](0)[5.082627]INFO:     VA:0x14003000  PA:0x14003000  size:0x1000  attr:0x8
+[ATF](0)[5.083499]INFO:     VA:0x11000000  PA:0x11000000  size:0x4000000  attr:0x8
+[ATF](0)[5.084403]INFO:     VA:0x15021000  PA:0x15021000  size:0x1000  attr:0x8
+[ATF](0)[5.085276]INFO:     VA:0x15022000  PA:0x15022000  size:0x1000  attr:0x8
+[ATF](0)[5.086148]INFO:     VA:0x1502b000  PA:0x1502b000  size:0x1000  attr:0x8
+[ATF](0)[5.087020]INFO:     VA:0x17010000  PA:0x17010000  size:0x1000  attr:0x8
+[ATF](0)[5.087893]INFO:     VA:0x1a002000  PA:0x1a002000  size:0x1000  attr:0x8
+[ATF](0)[5.088765]INFO:     VA:0x1a004000  PA:0x1a004000  size:0x1000  attr:0x8
+[ATF](0)[5.089637]INFO:     VA:0x1a005000  PA:0x1a005000  size:0x1000  attr:0x8
+[ATF](0)[5.090510]INFO:     VA:0x1a040000  PA:0x1a040000  size:0x1000  attr:0x8
+[ATF](0)[5.091382]INFO:     VA:0x1a041000  PA:0x1a041000  size:0x1000  attr:0x8
+[ATF](0)[5.092254]INFO:     VA:0x1a042000  PA:0x1a042000  size:0x1000  attr:0x8
+[ATF](0)[5.093127]INFO:     VA:0x1a043000  PA:0x1a043000  size:0x1000  attr:0x8
+[ATF](0)[5.093999]INFO:     VA:0x1a044000  PA:0x1a044000  size:0x1000  attr:0x8
+[ATF](0)[5.094871]INFO:     VA:0x1a045000  PA:0x1a045000  size:0x1000  attr:0x8
+[ATF](0)[5.095743]INFO:     VA:0x201d7000  PA:0x201d7000  size:0x1000  attr:0x8
+[ATF](0)[5.096616]INFO:     VA:0x47d80000  PA:0x47d80000  size:0x20000  attr:0x2
+[ATF](0)[5.097499]INFO:     VA:0x47dc6000  PA:0x47dc6000  size:0x1000  attr:0x8
+[ATF](0)[5.098371]INFO:     VA:0x47d80000  PA:0x47d80000  size:0x4f000  attr:0xa
+[ATF](0)[5.099254]INFO:     VA:0xbff30000  PA:0xbff30000  size:0x40000  attr:0x18
+[ATF](0)[5.100148]INFO:    
+[ATF](0)[5.103723]INFO:    abnormal_boot: 0x0, cflag: 0x41544641
+[ATF](0)[5.109202]INFO:    mt_log_setup
+[ATF](0)[5.109624]INFO:     -atf_buf_lock: 0x0
+[ATF](0)[5.110141]INFO:     -mt_log_buf_start: 0xbff30000
+[ATF](0)[5.110777]INFO:     -mt_log_buf_size: 0x40000
+[ATF](0)[5.111370]INFO:     -log_addr: 0xbff30200
+[ATF](0)[5.111919]INFO:     -log_size: 0x13e00
+[ATF](0)[5.112436]INFO:     -write_offset: 0x0
+[ATF](0)[5.112952]INFO:     -read_offset: 0x0
+[ATF](0)[5.113459]INFO:     -log_buf_end : 0xbff43fff
+[ATF](0)[5.114051]INFO:     -ATF_EXCEPT_BUF_SIZE_PER_CPU : 0x1000
+[ATF](0)[5.114772]INFO:     -ATF_EXCEPT_BUF_SIZE : 0x8000
+[ATF](0)[5.115407]INFO:     -PLATFORM_CORE_COUNT : 0x8
+[ATF](0)[5.116011]INFO:     -except_write_pos_per_cpu[0]: 0xbff64000
+[ATF](0)[5.116765]INFO:     -except_write_pos_per_cpu[1]: 0xbff65000
+[ATF](0)[5.117518]INFO:     -except_write_pos_per_cpu[2]: 0xbff66000
+[ATF](0)[5.118272]INFO:     -except_write_pos_per_cpu[3]: 0xbff67000
+[ATF](0)[5.119026]INFO:     -except_write_pos_per_cpu[4]: 0xbff68000
+[ATF](0)[5.119780]INFO:     -except_write_pos_per_cpu[5]: 0xbff69000
+[ATF](0)[5.120534]INFO:     -except_write_pos_per_cpu[6]: 0xbff6a000
+[ATF](0)[5.121288]INFO:     -except_write_pos_per_cpu[7]: 0xbff6b000
+[ATF](0)[5.122042]INFO:     -crash_flag : 0x41544641
+[ATF](0)[5.122623]INFO:     -crash_log_addr : 0xbff44000
+[ATF](0)[5.123248]INFO:     -crash_log_size : 0x20000
+[ATF](0)[5.123867]INFO:    ATF log service is registered (0xbff30000, aee:0xbff6c000)
+[ATF](0)[5.124789]NOTICE:  BL31_BASE=0x47d80800, BL31_TZRAM_SIZE=0x31800
+[ATF](0)[5.125586]NOTICE:  TZRAM2_BASE=0x47db2000, TZRAM2_SIZE=0x1d000
+[ATF](0)[5.126361]NOTICE:  BL31: v1.4(debug):20fe5d83a
+[ATF](0)[5.126964]NOTICE:  BL31: Built : 20:54:36, Apr 16 2024
+[ATF](0)[5.127653]INFO:    platform_setup_cpu()
+[ATF](0)[5.128182]INFO:    addr of cci_adb400_dcm_config: 0x0
+[ATF](0)[5.128860]INFO:    addr of sync_dcm_config: 0x0
+[ATF](0)[5.129474]INFO:    mp0_spmc: 0x3a00203b
+[ATF](0)[5.130001]INFO:    mp1_spmc: 0x640c043
+[ATF](0)[5.130528]INFO:    [ATF GIC] before clear_sec_pol_ctl_en
+[ATF](0)[5.131260]NOTICE:  call pccif1_hw_init
+[ATF](0)[5.131763]INFO:    BL31: Initializing runtime services
+[ATF](0)[5.132455]WARNING: BL31: cortex_a53: CPU workaround for 835769 was missing!
+[ATF](0)[5.133367]WARNING: BL31: cortex_a53: CPU workaround for 843419 was missing!
+[ATF](0)[5.134282]INFO:    BL31: cortex_a53: CPU workaround for 855873 was applied
+[ATF](0)[5.135207]INFO:    BL31: Preparing for EL3 exit to normal world
+[ATF](0)[5.135977]INFO:    Entry point address = 0x27f800000
+[ATF](0)[5.136645]INFO:    SPSR = 0x3c9
+[ATF](0)[5.137089]NOTICE:  NS-SCR_EL3_EFIN=0x4
+====> GZ (0)[    5.137920]Version of MTEE: mTEE_SDK: 2.2.2.004.S0MP1, Built: 16:05:09 Oct 17 2022
+
+Say Hello from EL2!
+
+MIDR: 410fd034, MPIDR: 80000000
+CPU Core: 0!
+GZ Platform: MTK_ARMV8
+Memory base: 0x247800000, size: 0x800000
+lk_init 0x3805cb78-0x3805cf50=984
+0 47e6da80 5920 11002000 in lk_main
+====> GZ (0)[    0.002266]Version of GZ-CORE: GZ_CORE_hypervisor: 3.2.0.050.S0MP1, Built: 16:05:06 Oct 17 2022
+====> GZ (0)[    0.003468]platform_init_mmu_mappings membase: 0x247800000
+====> GZ (0)[    0.004275]platform_init_mmu_mappings memsize: 0x800000
+====> GZ (0)[    0.005050]platform_init_mmu_mappings kernel offset: 0x38000000
+====> GZ (0)[    0.005912]platform_init_mmu_mappings ram phys: 0x27f800000
+====> GZ (0)[    0.006730]platform_init_mmu_mappings ram size: 800000
+====> GZ (0)[    0.007525]INIT: cpu 0, calling hook 0x38009254 (libvmm_early) at level 0x10000, flags 0x1
+
+welcome to lk/MP
+
+boot args 0x0 0x47e6da80 0x5920 0x11002000
+calling constructors
+initializing heap
+====> GZ (0)[    0.009802]INIT: cpu 0, calling hook 0x38040508 (vm_preheap) at level 0x3ffff, flags 0x1
+====> GZ (0)[    0.011065]base 0x3830d000 size 8192 bytes, heap_grow_sz:8192
+====> GZ (0)[    0.011887]base 0x3830f000 size 4096 bytes, heap_grow_sz:4096
+initializing kernel
+====> GZ (0)[    0.012944]INIT: cpu 0, calling hook 0x3800b570 (plat_sip_smc_ver) at level 0x50000, flags 0x1
+====> GZ (0)[    0.014140]plat_sip_smc_version_init sip ver, major=0x0, minor=0x1
+====> GZ (0)[    0.015033]INIT: cpu 0, calling hook 0x38040560 (vm) at level 0x50000, flags 0x1
+====> GZ (0)[    0.016084]INIT: cpu 0, calling hook 0x380093bc (libvmm) at level 0x50001, flags 0x1
+====> GZ (0)[    0.017182][platform_set_boot_mode]:gz boot mode is 1 
+====> GZ (0)[    0.017934]platform_set_boot_info BOOT_TAG_IS_ABNORMAL_BOOT found=0x0!
+[ATF](0)[13.391083]INFO:    clear_all_on_mux
+[ATF](0)[13.391566]INFO:    SPM: enable SPMC mode
+[ATF](0)[13.392132]INFO:    save kernel info
+[ATF](0)[13.392613]INFO:    bl31_prepare_kernel_entry: return to GZ!
+[ATF](0)[13.393366]INFO:    el3_exit
+[    0.000000] -(0)[0:swapper]Booting Linux on physical CPU 0x0000000000 [0x410fd034]
+[    0.000000] -(0)[0:swapper]Linux version 4.19.191-gd52d0464cc48 (nobody@android-build) (Android (6443078 based on r383902) clang version 11.0.1 (https://android.googlesource.com/toolchain/llvm-project b397f81060ce6d701042b782172ed13bee898b79), LLD 11.0.1 (/buildbot/tmp/tmp6_m7QH b397f81060ce6d701042b782172ed13bee898b79)) #11 SMP PREEMPT Tue May 28 23:26:21 CST 2024
+[    0.000000] -(0)[0:swapper]Machine model: MT6765
+...
