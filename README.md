@@ -47,3 +47,4 @@ The Preloader loads the `lk`, `tee` (ATF), and `gz` GPT partitions into memory, 
 - https://research.nccgroup.com/2020/10/15/theres-a-hole-in-your-soc-glitching-the-mediatek-bootrom/
 - https://commoncriteriaportal.org/files/epfiles/NSCIB-CC-0486650-ST-v1.91.pdf
 - https://gist.github.com/lopestom/ce250f5de64a2764ee85092a2c01939e - android partition name info
+- https://github.com/u-boot/u-boot/blob/master/doc/README.mediatek - u-boot mediatek docs
