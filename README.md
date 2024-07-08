@@ -41,6 +41,17 @@ The Preloader loads cached DRAM calibration data from the `boot_para` GPT partit
 
 The Preloader loads the `lk`, `tee` (ATF), and `gz` GPT partitions into memory, and verifies their signatures.
 
+## BROM
+
+The CPU starts in AArch32 mode.
+
+As far as I can tell, the ROM itself is mapped at address 0.
+
+Among the first things it does is:
+
+- Copy data from `0x00010618` to `0x00102740`-`0x00102891` (presumably `.data`)
+- Zero the range `0x00102894`-`0x00102d00` (presumably `.bss`)
+
 # References
 
 - https://juejin.cn/post/6844904089663307790 - Mediatek boot process overview (in Chinese)
@@ -48,3 +59,4 @@ The Preloader loads the `lk`, `tee` (ATF), and `gz` GPT partitions into memory, 
 - https://commoncriteriaportal.org/files/epfiles/NSCIB-CC-0486650-ST-v1.91.pdf
 - https://gist.github.com/lopestom/ce250f5de64a2764ee85092a2c01939e - android partition name info
 - https://github.com/u-boot/u-boot/blob/master/doc/README.mediatek - u-boot mediatek docs
+- https://github.com/bkerler/mtkclient/blob/a789e6ccb5601e931a4f4a1f2c3f36fe59c29a81/Tools/emulate_preloader.py - mtkclient preloader emulation (useful hw addresses)
