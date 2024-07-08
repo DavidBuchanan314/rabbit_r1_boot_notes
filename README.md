@@ -27,15 +27,19 @@ There are soooo many acronyms and abbreviations, so here's a big list for refere
 
 # Boot Stages Overview
 
-Boot starts in `brom`, which is baked into the CPU silicon. The CPU starts in a 32-bit mode (TODO: what's the precise mode?).
+Boot starts in `brom`, which is baked into the CPU silicon. The CPU starts in AArch32 mode.
 
 The next stage is the Preloader, which is stored in the `boot0` partition of eMMC (not to be confused with the `boot` GPT partition).
 
-Preloader is loaded into memory at offset `0x200f10`, with entrypoint at `0x201000`. The CPU is still in a 32-bit mode here.
+Preloader is loaded into memory at offset `0x200f10`, with entrypoint at `0x201000`. The CPU is still in AArch32 mode here.
 
 The Preloader's stack spans from `0x200000` to `0x200c00`.
 
-The Preloader is responsible for showing the initial boot logo, charging animations, etc. (logo image data is stored in the `logo` GPT partition)
+The Preloader is responsible for showing the initial boot logo, charging animations, etc. (logo image data is stored in the `logo` GPT partition).
+
+The Preloader loads cached DRAM calibration data from the `boot_para` GPT partition.
+
+The Preloader loads the `lk`, `tee` (ATF), and `gz` GPT partitions into memory, and verifies their signatures.
 
 # References
 
