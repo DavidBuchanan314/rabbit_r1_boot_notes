@@ -49,8 +49,24 @@ As far as I can tell, the ROM itself is mapped at address 0.
 
 Among the first things it does is:
 
-- Copy data from `0x00010618` to `0x00102740`-`0x00102891` (presumably `.data`)
-- Zero the range `0x00102894`-`0x00102d00` (presumably `.bss`)
+- The stack is set up to grow downwards from `0x0010_2738`
+- Copy data from `0x0001_0618` to `0x0010_2740`-`0x0010_2891` (presumably `.data`)
+- Zero the range `0x0010_2894`-`0x0010_2d00` (presumably `.bss`)
+
+# Physical Memory Map
+
+```
+start       - end (inclusive)
+
+0x0010_0000 - 0x0030_0000: SRAM (unsure of exact size/end)
+
+0x1000_7000 - 0x????_????: WDT
+
+0x1100_2000 - 0x1100_2020: UART
+0x1100_3000 - 0x1100_3020: UART
+
+0x4000_0000 - 0x1_4000_0000: DRAM (4GB)
+```
 
 # References
 
@@ -59,4 +75,4 @@ Among the first things it does is:
 - https://commoncriteriaportal.org/files/epfiles/NSCIB-CC-0486650-ST-v1.91.pdf
 - https://gist.github.com/lopestom/ce250f5de64a2764ee85092a2c01939e - android partition name info
 - https://github.com/u-boot/u-boot/blob/master/doc/README.mediatek - u-boot mediatek docs
-- https://github.com/bkerler/mtkclient/blob/a789e6ccb5601e931a4f4a1f2c3f36fe59c29a81/Tools/emulate_preloader.py - mtkclient preloader emulation (useful hw addresses)
+- https://github.com/bkerler/mtkclient/blob/a789e6ccb5601e931a4f4a1f2c3f36fe59c29a81/mtkclient/config/brom_config.py#L974-L1001 - mtkclient chipconfig (useful memory addresses)
