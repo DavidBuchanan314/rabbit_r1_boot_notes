@@ -23,8 +23,11 @@ There are soooo many acronyms and abbreviations, so here's a big list for refere
 - `mtkclient`: https://github.com/bkerler/mtkclient - "MTK reverse engineering and flash tool"
 - `Picachu`: "PI CAlibration and CHaracterization Utility" - "voltage calibration during booting" (What is PI? Power Input?)
 - `REE`: Rich Execution Environment
+- `SEJ`: "Security Engine with JTAG control"
 - `SSPM`: "System Security Processor Manager", "Secure System Power Manager" (???)
 - `TEE`: Trusted Execution Environment
+
+More terms defined [here](https://github.com/cyrozap/mediatek-lte-baseband-re/blob/master/General-Notes.adoc)
 
 # Boot Stages Overview
 
@@ -68,6 +71,23 @@ The Preloader is responsible for (in no particular order):
 - Optionally booting into "Fastboot" mode.
 - Optionally booting a "DA" image, loaded over USB.
 
+# \[In\]secure Boot
+
+(NOTE: This section is very WIP and may contain inaccurate information. I'll try to verify this stuff soon)
+
+Bootloader lock status is stored in the `seccfg` partition. (i.e. whether Preloader will allow custom `boot` images to boot).
+
+The format of this data is "SecCfgV4", and you can see the parsing logic implemented in mtkclient [here](https://github.com/bkerler/mtkclient/blob/a789e6ccb5601e931a4f4a1f2c3f36fe59c29a81/mtkclient/Library/Hardware/seccfg.py#L11-L102)
+
+The configuration data is hashed, and that hash is encrypted using a hardware* crypto engine (`sej`). The encrypted hash acts as a signature of sorts.
+
+*actually whether it's hardware or software seems to depend on version. TODO: figure this out for sure.
+
+As a security control this is ineffective for two reasons:
+
+1. IIUC, The "kamakiri" exploit allows for key dumping (since it gains code exec in brom context).
+2. IIUC, the DA can be asked nicely to encrypt/decrypt arbitrary data (no exploits needed!!!)
+
 # Physical Memory Map
 
 ```
@@ -94,3 +114,4 @@ start       - end (inclusive)
 - https://gist.github.com/lopestom/ce250f5de64a2764ee85092a2c01939e - android partition name info
 - https://github.com/u-boot/u-boot/blob/master/doc/README.mediatek - u-boot mediatek docs
 - https://github.com/bkerler/mtkclient/blob/a789e6ccb5601e931a4f4a1f2c3f36fe59c29a81/mtkclient/config/brom_config.py#L974-L1001 - mtkclient chipconfig (useful memory addresses)
+- https://github.com/cyrozap/mediatek-lte-baseband-re/blob/master/General-Notes.adoc MTK baseband reversing notes, includes glossary
