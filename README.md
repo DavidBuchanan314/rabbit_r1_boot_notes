@@ -42,6 +42,8 @@ The Preloader loads cached DRAM calibration data from the `boot_para` GPT partit
 
 The Preloader loads the `lk`, `tee` (ATF), and `gz` GPT partitions into memory, and verifies their signatures.
 
+(TODO: move some of this "overview" stuff into the subsections below)
+
 ## BROM
 
 The CPU starts in AArch32 mode.
