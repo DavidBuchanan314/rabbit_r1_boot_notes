@@ -31,6 +31,7 @@ def parse_gfh(stream):
 # https://github.com/josefeliuf/vendor/blob/474f53c591ec2bbcf2e53ad105031ab4c5458a8c/sprd/proprietories-source/packimage_scripts/signimage/sansa/python/bin/sbu_scripts/flags_global_defines.py
 
 # DX = Discretix
+# Trivia: Discretix changed their name to Sansa Security in 2014, and in 2015 got bought by ARM
 DX_CERT_MAGIC_NUMBER = 0xE291F358
 class DX_CERT_TYPE(Enum):
 	UNKNOWN = 0

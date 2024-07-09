@@ -12,6 +12,7 @@ There are soooo many acronyms and abbreviations, so here's a big list for refere
 - `ATF`, `TF-A`: [ARM Trusted Firmware](https://community.arm.com/oss-platforms/w/docs/483/trusted-firmware-a)
 - `brom`: bootrom
 - `BSP`: Board Support Package
+- `DA`: Download Agent
 - `EL0`, `EL1`, `EL2`, `EL3`: [ARM Exeption Levels](https://developer.arm.com/documentation/102412/0103/Privilege-and-Exception-levels/Exception-levels)
 - `GPT`: [GUID Partition Table](https://en.wikipedia.org/wiki/GUID_Partition_Table)
 - `GZ`: [GenieZone](https://patchwork.kernel.org/project/linux-mediatek/patch/20230919111210.19615-2-yi-de.wu@mediatek.com/), EL2 Hypervisor (not to be confused with gzip!)
@@ -53,12 +54,27 @@ Among the first things it does is:
 - Copy data from `0x0001_0618` to `0x0010_2740`-`0x0010_2891` (presumably `.data`)
 - Zero the range `0x0010_2894`-`0x0010_2d00` (presumably `.bss`)
 
+## Preloader
+
+The Preloader also starts in AArch32 mode.
+
+The Preloader is responsible for (in no particular order):
+
+- Initialising DRAM
+- Showing the boot logo (and associated animations, e.g. charging)
+- Loading and jumping to the next stage (I haven't figured out the specifics of this yet, I think it also switches to AArch64)
+- Optionally booting into "Fastboot" mode.
+- Optionally booting a "DA" image, loaded over USB.
+
 # Physical Memory Map
 
 ```
 start       - end (inclusive)
 
-0x0010_0000 - 0x0030_0000: SRAM (unsure of exact size/end)
+0x0000_0000 - 0x????_????: BROM
+
+0x0010_0000 - 0x0011_2000: SRAM
+0x0020_0000 - 0x0030_0000: SRAM (1MB)
 
 0x1000_7000 - 0x????_????: WDT
 
