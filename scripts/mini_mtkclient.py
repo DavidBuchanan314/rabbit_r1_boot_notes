@@ -43,33 +43,17 @@ class R1Exploit():
 		print("Disabling wdt...")
 		self.cmd_write32(0x1000_7000, [0x2200_0064])
 
-		preloader = bytearray(open("../dumped_bins/preloader_k65v1_64_bsp.bin", "rb").read()[0xf0:])
-		lk = bytearray(open("../dumped_bins/lk.bin", "rb").read()[0x200:0xB7440] + preloader[-0x100:])
-
-		do_patch(
-			preloader,
-			bytes.fromhex("28 b9  c5 48  01 f0 c3 fd"),
-			bytes.fromhex("05 e0  c5 48  01 f0 c3 fd"),
-			"preloader: don't disable logging"
-		)
-
-		# patch 2: don't bother loading lk from emmc
-		#do_patch(
-		#	preloader,
-		#	bytes.fromhex("ff f7 97 fc   08 b1   06 46"),
-		#	bytes.fromhex("4f f0 00 00   08 b1   06 46"),
-		#	"preloader: don't load lk from emmc"
-		#)
-
-		# patch 3: make a noticeable change to lk
-		do_patch(
-			lk,
-			b"welcome to lk",
-			b"welcome patch",
-			"lk: welcome message"
-		)
+		
 
 		if self.brom:
+			preloader = bytearray(open("../dumped_bins/preloader_k65v1_64_bsp.bin", "rb").read()[0xf0:])
+
+			do_patch(
+				preloader,
+				bytes.fromhex("28 b9  c5 48  01 f0 c3 fd"),
+				bytes.fromhex("05 e0  c5 48  01 f0 c3 fd"),
+				"preloader: don't disable logging"
+			)
 			# load preloader into SRAM
 			self.cmd_send_da(0x20_1000, len(preloader), 0x100, preloader)
 
@@ -78,8 +62,8 @@ class R1Exploit():
 
 		else:
 			# load LK into DRAM
-			lk = open("./custom_da/main.bin", "rb").read() + bytes(0x100)
-			self.cmd_send_da(0x4020_0000, len(lk), 0x100, lk)
+			da = open("./custom_da/main.bin", "rb").read()
+			self.cmd_send_da(0x4020_0000, len(da), 0, da)
 			self.cmd_jump_da(0x4020_0000)
 
 			time.sleep(0.1)
@@ -110,55 +94,6 @@ class R1Exploit():
 
 			self.echo(0xdeadbeef)
 			print("It worked!!!")
-
-			"""
-			Problem: My device has CFG_DA_RAM_ADDR = 0x40200000
-			which means it only accepts images there.
-
-			Also, maximum DA length is 0x400000 (4MB)
-
-			oh wait this is Preloader we can just patch it lmao
-
-			GZ is 2680304 bytes (~2.7MB)
-			LK is 750656 bytes (~0.7MB)
-			TEE is a mere 0x22686 bytes (~0.14MB)
-
-			so, we build a custom DA image that memcpy's the images into place
-			if we can do this all without patching Preloader then we don't
-			need to get people into BROM mode, and everything works with webusb.
-
-			If we're going the custom DA route, maybe I could write one that loads
-			everything from disk and patchfinds - I think mktclient has homebrew DA bins.
-			"""
-
-		#self.cmd_jump_da(0x21d0ee+1)
-
-		return
-		print("Sending da1...")
-		self.cmd_send_da(0x20_0000, 0x3_9f98, 0x100, open("da1.bin", "rb").read())
-
-		print("Sent da1, jumping...")
-		self.cmd_jump_da(0x20_0000)
-
-		sync = self.read(1)
-		assert(sync == b"\xc0")
-
-		self.xsend(b"SYNC")
-
-		self.xsend(0x010100) # SETUP_ENVIRONMENT
-		self.xsend(b"\x02\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00")
-		assert(self.xstatus() == 0)
-
-		self.xsend(0x010101) # SETUP_HW_INIT_PARAMS
-		self.xsend(b"\x00\x00\x00\x00")
-		assert(self.xstatus() == 0)
-		
-		assert(self.xstatus().to_bytes(4, "little") == b"SYNC")
-
-		print("DA sync success.")
-
-		print("Sending da2...")
-		self.boot_to(0x4000_0000, open("da2.bin", "rb").read())
 
 
 	def connect(self) -> None:
@@ -306,24 +241,6 @@ class R1Exploit():
 		self.echo(address)
 		status = int.from_bytes(self.read(2))
 		assert(status == 0)
-	
-	def xsend(self, data: int | bytes):
-		if type(data) is int:
-			data = data.to_bytes(4, "little")
-
-		hdr = self.XMAGIC + b"\x01\x00\x00\x00" + len(data).to_bytes(4, "little")
-		self.write(hdr)
-		self.write(data)
-
-	def xstatus(self):
-		hdr = self.read(12)
-		assert(hdr.startswith(self.XMAGIC))
-		length = int.from_bytes(hdr[-4:], "little")
-		body = self.read(length)
-		if length <= 4:
-			return int.from_bytes(body, "little")
-		else:
-			return [int.from_bytes(body[i:i+4], "little") for i in range(0, length, 4)]
 
 	def boot_to(self, addr: int, da: bytes):
 		self.xsend(0x010008) # BOOT_TO
@@ -339,7 +256,7 @@ class R1Exploit():
 
 
 if __name__ == "__main__":
-	R1Exploit(brom=True)
-	print("hello")
-	time.sleep(0.5)
+	#R1Exploit(brom=True)
+	#print("hello")
+	#time.sleep(0.5)
 	R1Exploit(brom=False)
