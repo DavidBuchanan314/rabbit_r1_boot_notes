@@ -23,7 +23,7 @@ There are soooo many acronyms and abbreviations, so here's a big list for refere
 - `mtkclient`: https://github.com/bkerler/mtkclient - "MTK reverse engineering and flash tool"
 - `Picachu`: "PI CAlibration and CHaracterization Utility" - "voltage calibration during booting" (What is PI? Power Input?)
 - `REE`: Rich Execution Environment
-- `SEJ`: "Security Engine with JTAG control"
+- `SEJ`: "Security Engine with JTAG control". Possibly the same thing as "HACC".
 - `SSPM`: "System Security Processor Manager", "Secure System Power Manager" (???)
 - `TEE`: Trusted Execution Environment
 
@@ -35,7 +35,7 @@ Boot starts in `brom`, which is baked into the CPU silicon. The CPU starts in AA
 
 The next stage is the Preloader, which is stored in the `boot0` partition of eMMC (not to be confused with the `boot` GPT partition).
 
-Preloader is loaded into memory at offset `0x200f10`, with entrypoint at `0x201000`. The CPU is still in AArch32 mode here.
+Preloader is loaded into SRAM at offset `0x200f10`, with entrypoint at `0x201000`. The CPU is still in AArch32 mode here.
 
 The Preloader's stack spans from `0x200000` to `0x200c00`.
 
@@ -43,7 +43,13 @@ The Preloader is responsible for showing the initial boot logo, charging animati
 
 The Preloader loads cached DRAM calibration data from the `boot_para` GPT partition.
 
-The Preloader loads the `lk`, `tee` (ATF), and `gz` GPT partitions into memory, and verifies their signatures.
+The Preloader loads the `lk`, `tee` (ATF), and `gz` GPT partitions into DRAM, and verifies their signatures.
+
+ATF is loaded at `0x4800_0000`, which is also where its entrypoint is. Once ATF has initialised, it jumps to GZ in EL2 context.
+
+GZ entrypoint is at `0x2_4780_0000` (which makes little sense, since that's outside of the DRAM range???)
+
+GZ appears to be itself based on LK also ("welcome to lk/MP" in uart logs)
 
 (TODO: move some of this "overview" stuff into the subsections below)
 
@@ -77,11 +83,9 @@ The Preloader is responsible for (in no particular order):
 
 Bootloader lock status is stored in the `seccfg` partition. (i.e. whether Preloader will allow custom `boot` images to boot).
 
-The format of this data is "SecCfgV4", and you can see the parsing logic implemented in mtkclient [here](https://github.com/bkerler/mtkclient/blob/a789e6ccb5601e931a4f4a1f2c3f36fe59c29a81/mtkclient/Library/Hardware/seccfg.py#L11-L102)
+The format of this data is "SecCfgV4", and you can see the parsing logic implemented in mtkclient [here](https://github.com/bkerler/mtkclient/blob/a789e6ccb5601e931a4f4a1f2c3f36fe59c29a81/mtkclient/Library/Hardware/seccfg.py#L11-L102) (nb, it's the `hwtype = "V2"` codepath that gets followed).
 
-The configuration data is hashed, and that hash is encrypted using a hardware* crypto engine (`sej`). The encrypted hash acts as a signature of sorts.
-
-*actually whether it's hardware or software seems to depend on version. TODO: figure this out for sure.
+The configuration data is hashed, and that hash is encrypted using a hardware crypto engine (`sej`). The encrypted hash acts as a signature of sorts.
 
 As a security control this is ineffective for two reasons:
 
@@ -105,6 +109,14 @@ start       - end (inclusive)
 
 0x4000_0000 - 0x1_4000_0000: DRAM (4GB)
 ```
+
+# Goals / TODOs
+
+- Write a minimal standalone mtkclient-like program that only does the things I need it to do (status: prototype)
+- Port said client to WebUSB (status: not started)
+- Figure out how to boot a patched LK (Done!!!)
+- Write "patchfinder" logic for LK offsets.
+- Figure out how to boot a custom `boot` via my patched LK (perhaps push it over USB before jumping to LK, and patch LK not to load from disk?)
 
 # References
 
