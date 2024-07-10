@@ -193,8 +193,8 @@ void main(void)
 	pl_printf(TAG "Original avb_hal_read_from_partition @ 0x%x\n", avb_hal_read_from_partition);
 	*avb_hal_read_from_partition_ptr = hook_avb_hal_read_from_partition;
 
-	//handle_vboot_state_trampoline[0] = 0x47184b00; // ldr r3, [pc, #0];  bx r3
-	//handle_vboot_state_trampoline[1] = (unsigned int)handle_vboot_state;
+	handle_vboot_state_trampoline[0] = 0x47184b00; // ldr r3, [pc, #0];  bx r3
+	handle_vboot_state_trampoline[1] = (unsigned int)handle_vboot_state;
 
 	// nb: memcpy is not thumb mode
 	memcpy_trampoline[0] = 0xe51ff004; // ldr   pc, [pc, #-4]
