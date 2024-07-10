@@ -69,6 +69,27 @@ printf_pattern = Pattern(
 	offset=0x4800_0000
 )
 
+handle_vboot_state_pattern = Pattern(
+	pattern=bytes.fromhex("30b5 83b0 02ab 0022"),
+	caremap=bytes.fromhex("ffff ffff ffff ffff"),
+	alignment=2, # thumb instructions
+	offset=0x4800_0000
+)
+
+lcd_printf_pattern = Pattern(
+	pattern=bytes.fromhex("0fb4 30b5 c9b0"),
+	caremap=bytes.fromhex("ffff ffff ffff"),
+	alignment=2, # thumb instructions
+	offset=0x4800_0000
+)
+
+memcpy_pattern = Pattern(
+	pattern=bytes.fromhex("000052e3 00005111 1eff2f01 31402de9"),
+	caremap=bytes.fromhex("ffffffff ffffffff ffffffff ffffffff"),
+	alignment=4, # non-thumb
+	offset=0x4800_0000
+)
+
 #path = "../../r1_backup/r1 backup/lk_a.bin"
 path = "lk_b.bin"
 data = open(path, "rb").read()[0x200:]
@@ -78,3 +99,12 @@ print(f"avb_hal_read_from_partition_ptr = {hex(avb_hal_read_from_partition_ptr)}
 
 printf = find_pattern(data, printf_pattern)
 print(f"printf = {hex(printf)}")
+
+handle_vboot_state = find_pattern(data, handle_vboot_state_pattern)
+print(f"handle_vboot_state = {hex(handle_vboot_state)}")
+
+lcd_printf = find_pattern(data, lcd_printf_pattern)
+print(f"lcd_printf = {hex(lcd_printf)}")
+
+memcpy = find_pattern(data, memcpy_pattern)
+print(f"memcpy = {hex(memcpy)}")

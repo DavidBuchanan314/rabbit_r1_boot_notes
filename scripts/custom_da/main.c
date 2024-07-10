@@ -143,7 +143,8 @@ void main(void)
 	printf(TAG "About to read 0x%x bytes of boot image over USB...\n", boot_image_len);
 
 	if (boot_image_len) {
-		int res = (*comport)->ops->recv((void*)0xb734081c, boot_image_len, 0);
+		int res = (*comport)->ops->recv((void*)0xbdf30000, boot_image_len, 0);
+		//int res = (*comport)->ops->recv((void*)0x48B00000, boot_image_len, 0);
 		printf(TAG "res: %d\n", res);
 
 		// TODO: respond with checksum
