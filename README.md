@@ -45,7 +45,7 @@ The Preloader loads cached DRAM calibration data from the `boot_para` GPT partit
 
 The Preloader loads the `lk`, `tee` (ATF), and `gz` GPT partitions into DRAM, and verifies their signatures.
 
-ATF is loaded at `0x4800_0000`, which is also where its entrypoint is. Once ATF has initialised, it jumps to GZ in EL2 context.
+~~ATF is loaded at `0x4800_0000`, which is also where its entrypoint is. Once ATF has initialised, it jumps to GZ in EL2 context.~~ (wrong, LK is loaded at 0x4800_0000, it seems that the LK entrypoint is responsible for calling ATF, which in turn calls GZ? Not really sure...)
 
 GZ entrypoint is at `0x2_4780_0000` (which makes little sense, since that's outside of the DRAM range???)
 
