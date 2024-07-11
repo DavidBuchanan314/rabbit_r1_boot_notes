@@ -117,10 +117,12 @@ start       - end (inclusive)
 # Goals / TODOs
 
 - Write a minimal standalone mtkclient-like program that only does the things I need it to do (status: prototype)
-- Port said client to WebUSB (status: not started)
+- Port said client to WebUSB (status: prototype)
 - Figure out how to boot a patched LK (Done!!!)
-- Write "patchfinder" logic for LK offsets.
-- Figure out how to boot a custom `boot` via my patched LK (perhaps push it over USB before jumping to LK, and patch LK not to load from disk?)
+- Write "patchfinder" logic for LK offsets. (python prototype, needs porting/integrating into C my code)
+- Figure out how to boot a custom `boot` via my patched LK (perhaps push it over USB before jumping to LK, and patch LK not to load from disk?) (DONE!)
+- Patch/hook LK to display a custom boot logo, for style points.
+- Figure out how to spawn adbd as root (and selinux unrestricted)
 
 # References
 

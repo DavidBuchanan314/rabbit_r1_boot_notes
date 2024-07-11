@@ -1,5 +1,7 @@
 # RabbitOS Jailbreak Instructions
 
+NOTE: There's a new OS update out, and I'll need to make some corresponding updates to my jailbreak. Please hold!
+
 These instructions are for the WebUSB Jailbreak script, which is live [here](https://retr0.id/stuff/r1_jailbreak/).
 
 The jailbreak itself is "tethered", meaning it does not persist between reboots. Everything stays in-memory, which makes it harder to brick your device etc. That said, this is a highly experimental tool, use at your own risk, bla bla bla.
@@ -88,3 +90,11 @@ setprop persist.sys.test_harness true
 ```
 
 I have a feeling this will stop working in future RabbitOS updates, but it works for now.
+
+### Misecellaneous Useful Commands
+
+Open settings:
+
+```sh
+am start -a android.settings.SETTINGS
+```
