@@ -79,7 +79,7 @@ class R1Exploit():
 			img_len = int.from_bytes(bootimg[-0x30:-0x2c]) # parse AVB footer https://github.com/ARM-software/u-boot/blob/master/lib/libavb/avb_footer.h
 			bootimg = bootimg[:img_len] # we don't care about the padding/footer (waste of time sending it over USB)
 			
-			bootimg = b"TEST"
+			#bootimg = b"TEST"
 
 			self.echo(len(bootimg))
 			print(f"Sending {len(bootimg)} bytes of bootimg...")
