@@ -4,7 +4,7 @@ These instructions are for the WebUSB Jailbreak script, which is live [here](htt
 
 The jailbreak itself is "tethered", meaning it does not persist between reboots. Everything stays in-memory, which makes it harder to brick your device etc. That said, this is a highly experimental tool, use at your own risk, bla bla bla.
 
-If you perform the [Post-Install](#Post-Install) steps, you can enable ADB persistently, giving you a non-root shell and the ability to install APKs, etc.
+If you perform the [Post-Install](#Post-Install) steps, you can enable ADB, giving you a more ergonomic (but non-root) shell and the ability to install APKs, etc.
 
 ### Credits
 
@@ -59,9 +59,9 @@ at the bottom of the screen.
 
 Connect to the TCP shell with `rlwrap nc rabbit_ip_here 1337`. You won't get a prompt or anything, but if you type in a command and press enter, you should see the results.
 
-### Persistent ADB
+### Enabling ADB
 
-The following commands will enable ADB (and developer mode settings) in a way that persists between reboots (and in theory, even between OTA updates)
+The following commands will enable ADB (and developer mode settings) in a way that persists between reboots (and in theory, even between OTA updates).
 
 ```sh
 pm uninstall --user 0 tech.rabbit.judy
@@ -72,3 +72,5 @@ settings put global adb_enabled 1
 "Judy" is a Rabbit service that tries to force-disable ADB, so of course we remove it first. Thank you to marceld505 for figuring these steps out.
 
 Once you have ADB installed, you can easily install additional APKs, etc.
+
+NOTE: Disabling Judy and enabling development settings will persist between reboots, but adb itself will not persist. TODO: make it actually persist.
