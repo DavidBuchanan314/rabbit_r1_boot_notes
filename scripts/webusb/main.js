@@ -45,6 +45,7 @@ function sleep(ms) {
 
 async function go()
 {
+	try {
 	print("[*] Connecting...");
 	let device = await navigator.usb.requestDevice({ filters: [{
 		vendorId: 0x0e8d,
@@ -188,6 +189,13 @@ async function go()
 	await sleep(500);
 	await usb_echo(device, be32enc(0xdeadbeef));
 	print("[+] It worked???!?");
+
+	} catch (error) {
+		console.log(error);
+		print("[-] FATAL: JavaScript exception :(");
+		print("");
+		print(error.stack.toString());
+	}
 }
 
 print("");
