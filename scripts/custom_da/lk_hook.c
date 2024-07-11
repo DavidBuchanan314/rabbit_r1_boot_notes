@@ -41,8 +41,8 @@ int (*const pl_printf)(const char *fmt, ...) = (void*)(0x2267fc+1);
 /* LK offsets */ // TODO: patchfinding!!!
 int (*const lk_printf)(const char *fmt, ...) = (void*)(0x48029c0c+1);
 int (*const lcd_printf)(const char *fmt, ...) = (void*)(0x4802991c+1);
-char *welcome_to_lk = (char*)0x48077cA4;
-char *orange_state = (char*)0x480858E8;
+//char *welcome_to_lk = (char*)0x48077cA4;
+//char *orange_state = (char*)0x480858E8;
 void **avb_hal_read_from_partition_ptr = (void*)0x480b6a9c;
 int (*avb_hal_read_from_partition)(
 	void *ops,
@@ -125,8 +125,7 @@ void *memcpy_hook(void *dest, const void *src, size_t n)
 		for (int i=0; i<8; i++) {
 			lk_printf(TAG "dst 0x%x: 0x%x\n", (uint32_t)dest+i*4, *(((uint32_t*)dest)+i));
 		}
-		//src = (void*)0xbdf30000; // hm this might be unmapped now...
-		return dest;
+		return dest; // don't actually copy anything
 	}
 	return memmove(dest, src, n); // for some reason it fails when we use memcpy?
 }
@@ -186,8 +185,8 @@ void main(void)
 {
 	pl_printf(TAG "Installing lk patches...\n");
 
-	strcpy(welcome_to_lk, "HACKED LK\n\n");
-	strcpy(orange_state, "HACKED STATE\n\n");
+	//strcpy(welcome_to_lk, "HACKED LK\n\n");
+	//strcpy(orange_state, "HACKED STATE\n\n");
 
 	avb_hal_read_from_partition = *avb_hal_read_from_partition_ptr;
 	pl_printf(TAG "Original avb_hal_read_from_partition @ 0x%x\n", avb_hal_read_from_partition);

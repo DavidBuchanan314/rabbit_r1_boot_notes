@@ -77,6 +77,10 @@ The Preloader is responsible for (in no particular order):
 - Optionally booting into "Fastboot" mode.
 - Optionally booting a "DA" image, loaded over USB.
 
+## LK
+
+LK implements [Android Verified Boot 2.0](https://android.googlesource.com/platform/external/avb/+/main/README.md).
+
 # \[In\]secure Boot
 
 (NOTE: This section is very WIP and may contain inaccurate information. I'll try to verify this stuff soon)

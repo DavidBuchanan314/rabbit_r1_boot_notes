@@ -76,8 +76,12 @@ class R1Exploit():
 			print("It worked!!!")
 
 			bootimg = open("../../my_dumps/boot_a3_uart.bin", "rb").read()
-			self.echo(len(bootimg))
+			img_len = int.from_bytes(bootimg[-0x30:-0x2c]) # parse AVB footer https://github.com/ARM-software/u-boot/blob/master/lib/libavb/avb_footer.h
+			bootimg = bootimg[:img_len] # we don't care about the padding/footer (waste of time sending it over USB)
+			
+			bootimg = b"TEST"
 
+			self.echo(len(bootimg))
 			print(f"Sending {len(bootimg)} bytes of bootimg...")
 
 			with tqdm(total=len(bootimg), unit="B", unit_scale=True, unit_divisor=1024) as pbar:
@@ -94,6 +98,16 @@ class R1Exploit():
 
 			self.echo(0xdeadbeef)
 			print("It worked!!!")
+
+			#print("Listening for log messages from DA:")
+			#try:
+			#	while log_len := int.from_bytes(self.read(4, timeout=10000)):
+			#		print("[DA]", self.read(log_len).decode())
+			#		time.sleep(0.1)
+			#except usb.core.USBTimeoutError:
+			#	print("Timed out")
+			#else:
+			#	print("DA hung up on us. That's probably good!")
 
 
 	def connect(self) -> None:
@@ -169,10 +183,10 @@ class R1Exploit():
 			else:
 				i += res
 	
-	def read(self, length) -> bytes:
+	def read(self, length, timeout=500) -> bytes:
 		res = b""
 		while len(res) < length:
-			res += self.ep_in.read(length - len(res))
+			res += self.ep_in.read(length - len(res), timeout=timeout)
 		return res
 
 	def echo(self, data: int | bytes):
