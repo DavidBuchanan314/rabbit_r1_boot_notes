@@ -1,7 +1,7 @@
 #!/bin/sh
 
 if [ "$#" -ne 1 ]; then
-	echo "USAGE: ./$0 rabbit_ip_address";
+	echo "USAGE: $0 rabbit_ip_address";
 	exit;
 fi
 

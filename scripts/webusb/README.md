@@ -65,6 +65,7 @@ The following commands will enable ADB (and developer mode settings) in a way th
 
 ```sh
 pm uninstall --user 0 tech.rabbit.judy
+kill $(pgrep judy)
 settings put global development_settings_enabled 1
 settings put global adb_enabled 1
 ```
@@ -73,4 +74,17 @@ settings put global adb_enabled 1
 
 Once you have ADB installed, you can easily install additional APKs, etc.
 
-NOTE: Disabling Judy and enabling development settings will persist between reboots, but adb itself will not persist. TODO: make it actually persist.
+**NOTE:** Disabling Judy and enabling development settings will persist between reboots, but adb itself will not persist.
+
+### Persisting ADB
+
+But wait, there's more!
+
+These commands will allow adb to persist beyond reboots (although the shell it gives you will be unprivileged)
+
+```sh
+setprop persist.sys.usb.config ""
+setprop persist.sys.test_harness true
+```
+
+I have a feeling this will stop working in future RabbitOS updates, but it works for now.
