@@ -190,16 +190,14 @@ async function go()
 	print("[+] It worked???!?");
 }
 
-print("")
-print("== READ THIS FIRST ===");
-print("")
+print("");
 print("This webpage uses WebUSB to jailbreak a connected Rabbit R1 device.");
 print("On success, it'll spawn a root shell on TCP port 1337 (not even telnet, super bare-bones).");
-print("It's a \"tethered\" jailbreak - i.e. just reboot and you're back to stock.");
 print("If you don't know what that is or why you'd want it, this isn't for you.");
-print("Only tested on latest RabbitOS (v0.8.107)");
-print("Disclaimer: Consider this a developer preview, may brick your device, etc. etc.");
-print("")
+print("DISCLAIMER: Consider this a developer preview, may brick your device, etc. etc.");
+print("");
+print("Credits to bkerler/mtkclient, ng-dst/flashable-android-rootkit, LuigiVampa92/unlocked-bootloader-backdoor-demo. Writeup coming soon-ish!");
+print("");
 print("1. Plug your R1 into your PC using a USB cable.");
 print("2. Power off your R1.");
 print("3. Click the \"connect\" button on this page.");
