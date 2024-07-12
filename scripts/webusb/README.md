@@ -34,6 +34,8 @@ EOF
 sudo udevadm control --reload-rules && sudo udevadm trigger
 ```
 
+If you run into permission errors, try adding [these](https://github.com/bkerler/mtkclient/blob/main/mtkclient/Setup/Linux/50-android.rules) udev rules too.
+
 ### Windows Prerequesites
 
 TODO: Figure this out
