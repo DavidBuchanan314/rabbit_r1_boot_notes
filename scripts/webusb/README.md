@@ -16,13 +16,13 @@ This project glues together code and ideas from:
 - [topjohnwu/Magisk](https://github.com/topjohnwu/Magisk)
 - [ookiineko/magiskboot_build](https://github.com/ookiineko/magiskboot_build)
 
-## Prerequesites
+## Prerequisites
 
 You need a browser that supports WebUSB, which at the moment is most things Chromium-based (and sadly, not Firefox).
 
 Your R1 should be running stock RabbitOS. Currently only tested on the latest version (v0.8.107) (Edit: also tested on v0.8.112).
 
-### Linux Prerequesites
+### Linux Prerequisites
 
 You will first need to disable the `cdc_acm` driver for this device, to allow WebUSB to take its place. You can do this like so:
 
@@ -36,11 +36,11 @@ sudo udevadm control --reload-rules && sudo udevadm trigger
 
 If you run into permission errors, try adding [these](https://github.com/bkerler/mtkclient/blob/main/mtkclient/Setup/Linux/50-android.rules) udev rules too.
 
-### Windows Prerequesites
+### Windows Prerequisites
 
 TODO: Figure this out
 
-### macOS Prerequesites
+### macOS Prerequisites
 
 TODO: Figure this out
 
