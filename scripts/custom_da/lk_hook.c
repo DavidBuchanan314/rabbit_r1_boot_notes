@@ -32,18 +32,16 @@ sounds like a safer place to hook.
 
 */
 
-// preloader offsets
+// preloader offsets (hardcoded for now, maybe should be passed in from main.c)
 int (*const pl_printf)(const char *fmt, ...) = (void*)(0x2267fc+1);
 // TODO: custom uart?
 
 #define TAG "[BOOTKIT][LK_HOOK] "
 
-/* LK offsets */ // TODO: patchfinding!!!
-int (*const lk_printf)(const char *fmt, ...) = (void*)(0x48029c0c+1);
-int (*const lcd_printf)(const char *fmt, ...) = (void*)(0x4802991c+1);
-//char *welcome_to_lk = (char*)0x48077cA4;
-//char *orange_state = (char*)0x480858E8;
-void **avb_hal_read_from_partition_ptr = (void*)0x480b6a9c;
+/* LK offsets (populated by scanning) */
+int (*lk_printf)(const char *fmt, ...);
+int (*lcd_printf)(const char *fmt, ...);
+void **avb_hal_read_from_partition_ptr;
 int (*avb_hal_read_from_partition)(
 	void *ops,
 	const char *partition,
@@ -53,8 +51,10 @@ int (*avb_hal_read_from_partition)(
 	void *buffer,
 	size_t *out_num_read
 );
-unsigned int *handle_vboot_state_trampoline = (void*)0x48050f80;
-unsigned int *memcpy_trampoline = (void*)0x4802aa38;
+unsigned int *handle_vboot_state_trampoline;
+unsigned int *memcpy_trampoline;
+
+/* TODO: move "libc" functions into their own source file!!! */
 
 char *strcpy(char *restrict dst, const char *restrict src)
 {
@@ -69,6 +69,13 @@ int memcmp(const void *vl, const void *vr, size_t n)
 	const unsigned char *l=vl, *r=vr;
 	for (; n && *l == *r; n--, l++, r++);
 	return n ? *l-*r : 0;
+}
+
+// musl
+int strcmp(const char *l, const char *r)
+{
+	for (; *l==*r && *l; l++, r++);
+	return *(unsigned char *)l - *(unsigned char *)r;
 }
 
 // musl
@@ -115,16 +122,59 @@ void *memmove(void *dest, const void *src, size_t n)
 	return dest;
 }
 
+/* END OF LIBC */
+
+
+#include "patterns.h"
+
+#define LK_BASE 0x48000000
+#define LK_END (LK_BASE + 0x100000)
+
+uintptr_t get_offset_by_name(const char *name)
+{
+	struct pattern *ptn = NULL;
+	for (size_t i=0; i<sizeof(PATTERNS)/sizeof(*PATTERNS); i++) {
+		if (strcmp(PATTERNS[i].name, name) == 0) {
+			ptn = &PATTERNS[i];
+			break;
+		}
+	}
+	if (ptn == NULL) {
+		pl_printf(TAG "ERROR: no such pattern '%s'\n", name);
+		return 0;
+	}
+	uintptr_t res = 0;
+	for (uintptr_t i=LK_BASE; i < LK_END - ptn->pattern_len; i += ptn->alignment) {
+		int success = 1;
+		for (uintptr_t j=0; j < ptn->pattern_len; j++) {
+			if ((*(uint8_t*)(i+j) & ptn->caremap[j]) != ptn->pattern[j]) {
+				success = 0;
+				break;
+			};
+		}
+		if (!success) continue;
+		if (res) {
+			pl_printf(TAG "WARNING: pattern '%s' matched more than once (crossing our fingers and using the later match)\n", name);
+		}
+		res = i + ptn->offset;
+		pl_printf(TAG "pattern '%s' matched at offset 0x%x\n", name, res);
+	}
+	if (!res) {
+		pl_printf(TAG "ERROR: pattern '%s' failed to match\n", name);
+	}
+	return res;
+}
+
 void *memcpy_hook(void *dest, const void *src, size_t n)
 {
 	if (dest == (void*)0x48B00000 /* && n == 0x2000000*/) {
 		lk_printf(TAG "Hooked memcpy!!! 0x%x, 0x%x, 0x%x\n", dest, src, n);
-		for (int i=0; i<8; i++) {
+		/*for (int i=0; i<8; i++) {
 			lk_printf(TAG "src 0x%x: 0x%x\n", (uint32_t)src+i*4, *(((uint32_t*)src)+i));
 		}
 		for (int i=0; i<8; i++) {
 			lk_printf(TAG "dst 0x%x: 0x%x\n", (uint32_t)dest+i*4, *(((uint32_t*)dest)+i));
-		}
+		}*/
 		return dest; // don't actually copy anything
 	}
 	return memmove(dest, src, n); // for some reason it fails when we use memcpy?
@@ -148,34 +198,13 @@ int hook_avb_hal_read_from_partition(
 	void *buffer,
 	size_t *out_num_read
 ) {
-	// XXX: does this printf support %lx?
 	lk_printf(TAG "Hooked avb_hal_read_from_partition(partition='%s', offset=0x%08x%08x, num_bytes=0x%x, buffer=0x%x);\n", partition, offset_hi, offset_lo, num_bytes, buffer);
-	// [1797] [BOOTKIT][LK_HOOK] Hooked avb_hal_read_from_partition(partition='boot_a', offset=0 0, num_bytes=0x2000000, buffer=0xb734081c);
 
-#if 0
-	if (memcmp(partition, "boot_", 5) == 0) {
-		lk_printf(TAG "Substituting boot image!!!\n");
-
-		/*lk_printf(TAG "Mapping the buffer we loaded earlier...\n");
-		// TODO
-
-		lk_printf(TAG "Doing the memcpy...\n");
-		memcpy(buffer, (void*)0x40280000, num_bytes); // ah fuck, this doesn't work because that memory isn't mapped yet. duhdoi. can we map it ourselves???
-
-		lk_printf(TAG "Unmapping the buffer again...\n");
-		// TODO*/
-
-		// orrrr we can just pre-load it at the right offset, then loading is a nop
-		memcpy(buffer, (void*)0xbdf30000, num_bytes);
-
-		*out_num_read = num_bytes;
-
-		return 0; // AVB_IO_RESULT_OK
-	}
-#endif
-	if (memcmp(partition, "boot_", 5) == 0) {
+	static int done_image_copy = 0;
+	if (!done_image_copy) {
 		lk_printf(TAG "Copying image...\n");
 		memcpy((void*)0x48B00000, (void*)0xbdf30000, 0x2000000);
+		done_image_copy = 1;
 	}
 
 	return avb_hal_read_from_partition(ops, partition, offset_lo, offset_hi, num_bytes, buffer, out_num_read);
@@ -183,10 +212,17 @@ int hook_avb_hal_read_from_partition(
 
 void main(void)
 {
-	pl_printf(TAG "Installing lk patches...\n");
+	pl_printf(TAG "Scanning for lk offsets...\n");
 
-	//strcpy(welcome_to_lk, "HACKED LK\n\n");
-	//strcpy(orange_state, "HACKED STATE\n\n");
+	lk_printf = (void*)get_offset_by_name("printf");
+	lcd_printf = (void*)get_offset_by_name("lcd_printf");
+	avb_hal_read_from_partition_ptr = (void*)get_offset_by_name("avb_hal_read_from_partition_ptr");
+	handle_vboot_state_trampoline = (void*)get_offset_by_name("handle_vboot_state");
+	memcpy_trampoline = (void*)get_offset_by_name("memcpy");
+
+	// TODO: maybe bail out here if any offsets failed...
+
+	pl_printf(TAG "Installing lk patches...\n");
 
 	avb_hal_read_from_partition = *avb_hal_read_from_partition_ptr;
 	pl_printf(TAG "Original avb_hal_read_from_partition @ 0x%x\n", avb_hal_read_from_partition);

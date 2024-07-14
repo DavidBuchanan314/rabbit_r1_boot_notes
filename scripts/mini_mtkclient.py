@@ -270,7 +270,7 @@ class R1Exploit():
 
 
 if __name__ == "__main__":
-	#R1Exploit(brom=True)
-	#print("hello")
-	#time.sleep(0.5)
+	R1Exploit(brom=True)
+	print("hello")
+	time.sleep(0.5)
 	R1Exploit(brom=False)

@@ -126,7 +126,6 @@ void main(void)
 {
 	printf(TAG "Hello from custom DA image!\n");
 
-	// TODO: read in some data over usb
 	uint32_t hello;
 	usbdl_get_dword(&hello);
 	usbdl_put_dword(hello);
@@ -161,6 +160,8 @@ void main(void)
 	trambopoline[1] = (unsigned int)hook_bldr_jump64;
 
 	// TODO: maybe log this, and previous value
+	// I'm commenting this out for now because I think it might be
+	// responsible for the random reboots into fastboot mode
 	*g_boot_reason = 0; // regular boot (as opposed to usb charger boot)
 	rtc_mark_bypass_pwrkey(); // force a full boot
 
