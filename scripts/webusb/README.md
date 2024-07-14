@@ -38,7 +38,7 @@ Note, the installer will tell you to reboot at the end, but this seems to be unn
 
 ### macOS Prerequisites
 
-TODO: Figure this out
+No special instructions. It Just Works™
 
 ## Doing the thing
 
@@ -94,3 +94,11 @@ Open settings:
 ```sh
 am start -a android.settings.SETTINGS
 ```
+
+## Known Issues
+
+When left alone for a while, the device sometimes randomly reboots into Fastboot mode. I'm not sure why!
+
+This is annoying but harmless, you can just reboot the device and everything should be back to normal.
+
+My current hunch is that RTC flag registers aren't getting set properly for whatever reason.

@@ -208,7 +208,7 @@ async function go()
 
 	await sleep(500);
 	buffer = await usb_echo(reader, writer, buffer, be32enc(0xdeadbeef));
-	print("[+] It worked???!?");
+	print("[+] It worked???!? (Note, the screen will stay off for several seconds, this is normal)");
 
 	} catch (error) {
 		console.log(error);
