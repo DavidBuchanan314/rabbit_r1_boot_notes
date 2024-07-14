@@ -183,7 +183,23 @@ void *memcpy_hook(void *dest, const void *src, size_t n)
 int handle_vboot_state(void)
 {
 	lk_printf(TAG "Hooked handle_vboot_state()!!!\n");
-	lcd_printf("Congratulations, you are very cool!\n\n");
+
+	lcd_printf("          `-\\ .*\n");
+	lcd_printf("         \\  |/,..-'\n");
+	lcd_printf("          |./-+--.\n");
+	lcd_printf("          |//--'\n");
+	lcd_printf("      .--//        BOOTING CARROOT\n");
+	lcd_printf("     '  -. `.\n");
+	lcd_printf("    '.--.  \\'         a tethered bootkit by retr0id\n");
+	lcd_printf("    |      /\n");
+	lcd_printf("    |.  -./\n");
+	lcd_printf("    |    /      greetz to rabbitude, bggp, tmp.0ut,\n");
+	lcd_printf("    |.- /      phrack, reswitched, gen4, fox8091, xyz,\n");
+	lcd_printf("    |  /      bkerler, ng-dst, LuigiVampa92, topjohnwu\n");
+	lcd_printf("    | /\n");
+	lcd_printf("    |/\n");
+	lcd_printf("\n");
+	
 	//memcpy((void*)0xb734081c, (void*)0xbdf30000, 0x2000000);
 	return 0;
 }
