@@ -128,15 +128,16 @@ struct pattern {{
 	const size_t offset;
 }};
 
-struct pattern PATTERNS[] = {{
+static const struct pattern PATTERNS[] = {{
 """
 
 	for pattern in PATTERNS:
+		padding = bytes(-len(pattern.pattern) % 4) # pad to word boundary (TODO: make use of this optimisation...)
 		out += f"""\
 	{{
 		.name = "{pattern.name}",
-		.pattern = (uint8_t[]){{{",".join(f"0x{x:02x}" for x in pattern.pattern)}}},
-		.caremap = (uint8_t[]){{{",".join(f"0x{x:02x}" for x in pattern.caremap)}}},
+		.pattern = (uint8_t[]){{{",".join(f"0x{x:02x}" for x in pattern.pattern + padding)}}},
+		.caremap = (uint8_t[]){{{",".join(f"0x{x:02x}" for x in pattern.caremap + padding)}}},
 		.pattern_len = {len(pattern.pattern)},
 		.alignment = {pattern.alignment},
 		.offset = {pattern.offset},

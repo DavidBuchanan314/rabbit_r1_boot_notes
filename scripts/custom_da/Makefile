@@ -1,6 +1,6 @@
 all: main.bin
 
-CFLAGS := -nostdlib -ffreestanding -static -Wall -Wextra -N -Wl,--no-warn-rwx-segments
+CFLAGS := -nostdlib -ffreestanding -static -Wall -Wextra -N -Wl,--no-warn-rwx-segments -O3
 DA_BASE := 0x40200000
 LK_HOOK_BASE := 0x48380000
 

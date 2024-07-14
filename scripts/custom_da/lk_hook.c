@@ -132,7 +132,7 @@ void *memmove(void *dest, const void *src, size_t n)
 
 uintptr_t get_offset_by_name(const char *name)
 {
-	struct pattern *ptn = NULL;
+	const struct pattern *ptn = NULL;
 	for (size_t i=0; i<sizeof(PATTERNS)/sizeof(*PATTERNS); i++) {
 		if (strcmp(PATTERNS[i].name, name) == 0) {
 			ptn = &PATTERNS[i];
@@ -146,11 +146,33 @@ uintptr_t get_offset_by_name(const char *name)
 	uintptr_t res = 0;
 	for (uintptr_t i=LK_BASE; i < LK_END - ptn->pattern_len; i += ptn->alignment) {
 		int success = 1;
-		for (uintptr_t j=0; j < ptn->pattern_len; j++) {
-			if ((*(uint8_t*)(i+j) & ptn->caremap[j]) != ptn->pattern[j]) {
-				success = 0;
-				break;
-			};
+		if ((ptn->alignment & 3) == 0) { // faster word-aligned scanning
+			uint8_t *pattern = __builtin_assume_aligned(ptn->pattern, 4);
+			uint8_t *caremap = __builtin_assume_aligned(ptn->caremap, 4);
+			uint8_t *data = __builtin_assume_aligned((void*)i, 4);
+			for (uintptr_t j=0; j < ptn->pattern_len; j+=4) {
+				if ((*(uint32_t*)(data+j) & *(uint32_t*)(caremap+j)) != *(uint32_t*)(pattern+j)) {
+					success = 0;
+					break;
+				};
+			}
+		} else if ((ptn->alignment & 1) == 0) { // fast-ish half-word-aligned scanning
+			uint8_t *pattern = __builtin_assume_aligned(ptn->pattern, 4);
+			uint8_t *caremap = __builtin_assume_aligned(ptn->caremap, 4);
+			uint8_t *data = __builtin_assume_aligned((void*)i, 2);
+			for (uintptr_t j=0; j < ptn->pattern_len; j+=2) {
+				if ((*(uint16_t*)(data+j) & *(uint16_t*)(caremap+j)) != *(uint16_t*)(pattern+j)) {
+					success = 0;
+					break;
+				};
+			}
+		} else {
+			for (uintptr_t j=0; j < ptn->pattern_len; j++) {
+				if ((*(uint8_t*)(i+j) & ptn->caremap[j]) != ptn->pattern[j]) {
+					success = 0;
+					break;
+				};
+			}
 		}
 		if (!success) continue;
 		if (res) {
