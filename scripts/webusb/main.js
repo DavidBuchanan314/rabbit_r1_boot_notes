@@ -14,29 +14,51 @@ function print(msg)
 	logdiv.innerText += msg + "\n";
 }
 
-function dataViewsAreEqual(a, b) {
-	if (a.byteLength !== b.byteLength) return false;
-	for (let i=0; i < a.byteLength; i++) {
-	  if (a.getUint8(i) !== b.getUint8(i)) return false;
+// https://stackoverflow.com/a/78461863
+const areUnit8ArraysEqual = (a, b) => {
+	if (a.length !== b.length) {
+	  return false;
+	}
+	for (let i = 0; i < a.length; i++) {
+	  if (a[i] !== b[i]) {
+		return false;
+	  }
 	}
 	return true;
 }
+
+function concatUintArrays(a, b) {
+	var res = new Uint8Array(a.length + b.length);
+	res.set(a);
+	res.set(b, a.length);
+	return res;
+}
+
+async function readNbytes(reader, buffer_in, n) {
+	let buffer = buffer_in;
+	while (buffer.length < n) {
+		let res = await reader.read();
+		buffer = concatUintArrays(buffer, res.value);
+	}
+	return [buffer.slice(0, n), buffer.slice(n, buffer.length)];
+}
+
 
 function be32enc(val)
 {
 	return new Uint8Array([(val>>24)&0xff, (val>>16)&0xff, (val>>8)&0xff, val&0xff])
 }
 
-async function usb_echo(dev, data)
+async function usb_echo(reader, writer, buffer_in, data)
 {
-	let res = await dev.transferOut(1, data);
-	//console.log(res);
-	let res2 = await dev.transferIn(1, data.byteLength);
-	if (!dataViewsAreEqual(res2.data, new DataView(data.buffer))) {
+	await writer.write(data);
+	let [res, buffer] = await readNbytes(reader, buffer_in, data.length);
+	if (!areUnit8ArraysEqual(res, data)) {
 		print("[-] FATAL: Echo failed :(");
-		console.log(data, res2);
+		console.log(res, data);
 		assert(0);
 	}
+	return buffer;
 }
 
 function sleep(ms) {
@@ -47,23 +69,20 @@ async function go()
 {
 	try {
 	print("[*] Connecting...");
-	let device = await navigator.usb.requestDevice({ filters: [{
-		vendorId: 0x0e8d,
-		productId: 0x2000
+	let port = await navigator.serial.requestPort({ filters: [{
+		usbVendorId: 0x0e8d,
+		usbProductId: 0x2000
 	}] });
 	print("[+] Device connected.");
 
-	await device.open();
+	await port.open({ baudRate: 115200 }); // not the real baud (arbitrary value)
 
-	if (device.configuration === null) {
-		print("[*] Selecting configuration...");
-		await device.selectConfiguration(0);
-	}
+	print("[+] Port opened.");
 
-	print("[*] Claiming interface...");
-	await device.claimInterface(1);
+	const reader = port.readable.getReader();
+	const writer = port.writable.getWriter();
 
-	console.log(device);
+	console.log(port);
 
 	print("[*] Handshaking...");
 	let handshake_data = new Uint8Array([0xa0, 0x0a, 0x50, 0x05]);
@@ -71,19 +90,18 @@ async function go()
 	let num_tries = 0;
 	let res = null;
 	while (i < 4) {
-		//console.log("send", handshake_data[i])
-		res = await device.transferOut(1, handshake_data.slice(i, i+1));
-		if (res.status == "ok" && res.bytesWritten == 1) {
-			//console.log("sent");
-			res = await device.transferIn(1, 0x100);
-			//console.log(res, res.data.getInt8(res.data.byteLength-1));
-			//console.log(res.data.getUint8(res.data.byteLength-1) ^ handshake_data[i]);
-			if (res.status == "ok" && ((res.data.getUint8(res.data.byteLength-1) ^ handshake_data[i]) == 0xff)) {
-				i++;
-			} else {
-				i = 0;
-			}
+		await writer.write(handshake_data.slice(i, i+1));
+		
+		console.log("sent", handshake_data.slice(i, i+1));
+		res = await reader.read();
+		console.log(res);
+
+		if ((res.value[res.value.length-1] ^ handshake_data[i]) == 0xff) {
+			i++;
+		} else {
+			i = 0;
 		}
+
 		num_tries++;
 		if (num_tries > 100) {
 			print("[-] Handshake failed :(");
@@ -92,26 +110,28 @@ async function go()
 	}
 	print("[+] Handshook!");
 
-	await usb_echo(device, new Uint8Array([0xfd])); // GET_HW_CODE
-	res = await device.transferIn(1, 2);
+	let buffer = new Uint8Array([]);
+
+	buffer = await usb_echo(reader, writer, buffer, new Uint8Array([0xfd])); // GET_HW_CODE
+	[res, buffer] = await readNbytes(reader, buffer, 2);
 	console.log(res);
-	hwcode = res.data.getUint8(0) << 8 | res.data.getUint8(1);
+	hwcode = res[0] << 8 | res[1];
 	print(`[+] hw code: 0x${hwcode.toString(16)}`);
-	res = await device.transferIn(1, 2);
+	[res, buffer] = await readNbytes(reader, buffer, 2);
 	console.log(res);
 
 	print("[*] Disabling WDT...");
-	await usb_echo(device, new Uint8Array([0xd4])); // WRITE32
-	await usb_echo(device, be32enc(0x1000_7000));
-	await usb_echo(device, be32enc(1));
-	res = await device.transferIn(1, 2);
-	if (res.data.getUint16(0) > 3) {
+	buffer = await usb_echo(reader, writer, buffer, new Uint8Array([0xd4])); // WRITE32
+	buffer = await usb_echo(reader, writer, buffer, be32enc(0x1000_7000));
+	buffer = await usb_echo(reader, writer, buffer, be32enc(1));
+	[res, buffer] = await readNbytes(reader, buffer, 2);
+	if (new Uint16Array(res.buffer)[0] > 3) {
 		print(`[-] FATAL: Bad status ${res.data.getUint16(0)}`);
 		return;
 	}
-	await usb_echo(device, new Uint8Array([0x22, 0x00, 0x00, 0x64]));
-	res = await device.transferIn(1, 2);
-	if (res.data.getUint8(0) != 0) {
+	buffer = await usb_echo(reader, writer, buffer, new Uint8Array([0x22, 0x00, 0x00, 0x64]));
+	[res, buffer] = await readNbytes(reader, buffer, 2);
+	if (res[0] != 0) {
 		print(`[-] FATAL: Bad status ${res.data.getUint16(0)}`);
 		return;
 	}
@@ -121,12 +141,12 @@ async function go()
 	let da = await fetch("./da.bin").then(r => r.arrayBuffer());
 	print("[*] Sending DA...");
 	let dalen = da.byteLength;
-	await usb_echo(device, new Uint8Array([0xd7])); // SEND_DA
-	await usb_echo(device, be32enc(0x4020_0000)); // address
-	await usb_echo(device, be32enc(dalen)); // length
-	await usb_echo(device, be32enc(0)); // sig length
-	res = await device.transferIn(1, 2);
-	if (res.data.getUint8(0) != 0) {
+	buffer = await usb_echo(reader, writer, buffer, new Uint8Array([0xd7])); // SEND_DA
+	buffer = await usb_echo(reader, writer, buffer, be32enc(0x4020_0000)); // address
+	buffer = await usb_echo(reader, writer, buffer, be32enc(dalen)); // length
+	buffer = await usb_echo(reader, writer, buffer, be32enc(0)); // sig length
+	[res, buffer] = await readNbytes(reader, buffer, 2);
+	if (res[0] != 0) {
 		print(`[-] FATAL: Bad status ${res.data.getUint16(0)}`);
 		return;
 	}
@@ -134,17 +154,17 @@ async function go()
 	let pos = 0;
 	while (bytestowrite > 0) {
 		_sz = Math.min(bytestowrite, 64);
-		await device.transferOut(1, da.slice(pos, pos + _sz));
+		await writer.write(da.slice(pos, pos + _sz));
 		bytestowrite -= _sz;
 		pos += _sz;
 	}
 
 	await sleep(35);
 
-	let csum = await device.transferIn(1, 2);
-	console.log(csum);
-	res = await device.transferIn(1, 2);
-	if (res.data.getUint8(0) != 0) {
+	[res, buffer] = await readNbytes(reader, buffer, 2);
+	console.log("csum", res);
+	[res, buffer] = await readNbytes(reader, buffer, 2);
+	if (res[0] != 0) {
 		print(`[-] FATAL: Bad status ${res.data.getUint16(0)}`);
 		return;
 	}
@@ -152,10 +172,10 @@ async function go()
 
 
 	print("[*] Jumping to DA...");
-	await usb_echo(device, new Uint8Array([0xd5])); // JUMP_DA
-	await usb_echo(device, be32enc(0x4020_0000)); // address
-	res = await device.transferIn(1, 2);
-	if (res.data.getUint16(0) != 0) {
+	buffer = await usb_echo(reader, writer, buffer, new Uint8Array([0xd5])); // JUMP_DA
+	buffer = await usb_echo(reader, writer, buffer, be32enc(0x4020_0000)); // address
+	[res, buffer] = await readNbytes(reader, buffer, 2);
+	if (new Uint16Array(res.buffer)[0] != 0) {
 		print(`[-] FATAL: Bad status ${res.data.getUint16(0)}`);
 		return;
 	}
@@ -164,12 +184,12 @@ async function go()
 	await sleep(100);
 
 	print("[*] Saying hi to DA...");
-	await usb_echo(device, be32enc(0xdeadbeef));
+	buffer = await usb_echo(reader, writer, buffer, be32enc(0xdeadbeef));
 	print("[*] Loading boot.img... (TODO: loading bar for this lol (it's 22MB))")
 	let bootimg = await fetch("./boot.bin").then(r => r.arrayBuffer());
 	print("[*] Sending boot.img...");
 	let bootlen = bootimg.byteLength;
-	await usb_echo(device, be32enc(bootlen));
+	buffer = await usb_echo(reader, writer, buffer, be32enc(bootlen));
 
 	let progbar = document.createElement("span");
 	logdiv.appendChild(progbar);
@@ -179,7 +199,7 @@ async function go()
 	pos = 0;
 	while (bytestowrite > 0) {
 		_sz = Math.min(bytestowrite, 0x2000);
-		await device.transferOut(1, bootimg.slice(pos, pos + _sz));
+		await writer.write(bootimg.slice(pos, pos + _sz));
 		bytestowrite -= _sz;
 		pos += _sz;
 		let progsteps = Math.floor(proglen * (pos / bootlen));
@@ -187,7 +207,7 @@ async function go()
 	}
 
 	await sleep(500);
-	await usb_echo(device, be32enc(0xdeadbeef));
+	buffer = await usb_echo(reader, writer, buffer, be32enc(0xdeadbeef));
 	print("[+] It worked???!?");
 
 	} catch (error) {

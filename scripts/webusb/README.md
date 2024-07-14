@@ -24,21 +24,15 @@ Your R1 should be running stock RabbitOS. Currently only tested on the latest ve
 
 ### Linux Prerequisites
 
-You will first need to disable the `cdc_acm` driver for this device, to allow WebUSB to take its place. You can do this like so:
+Copy [this file](https://github.com/bkerler/mtkclient/blob/main/mtkclient/Setup/Linux/50-android.rules) into the `/etc/udev/rules.d/` directory, and then run `sudo udevadm control --reload-rules && sudo udevadm trigger`
 
-```sh
-cat << EOF | sudo tee /etc/udev/rules.d/10-rabbitr1.rules
-ATTR{idProduct}=="2000", ATTR{idVendor}=="0e8d", RUN="/bin/sh -c 'echo %k:1.0 > /sys/bus/usb/drivers/cdc_acm/unbind'"
-EOF
-
-sudo udevadm control --reload-rules && sudo udevadm trigger
-```
-
-If you run into permission errors, try adding [these](https://github.com/bkerler/mtkclient/blob/main/mtkclient/Setup/Linux/50-android.rules) udev rules too.
+If you followed an earlier (pre-release) version of these instructions, you'll need to delete `/etc/udev/rules.d/10-rabbitr1.rules` and re-run `sudo udevadm control --reload-rules && sudo udevadm trigger`
 
 ### Windows Prerequisites
 
-TODO: Figure this out
+Install [these drivers](https://downloads2.myteracube.com/Tools/Drivers/MediaTek_Preloader_USB_VCOM_Drivers_Setup_Signed.zip) ([source](https://community.myteracube.com/t/teracube-2e-instructions-to-install-factory-software-and-to-reset/4026) - note to Rabbit Inc., you should be making similar provisions for your users.)
+
+Note, the installer will tell you to reboot at the end, but this seems to be unnecessary.
 
 ### macOS Prerequisites
 
