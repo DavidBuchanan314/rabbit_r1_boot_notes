@@ -219,7 +219,7 @@ async function go()
 }
 
 print("");
-print("This webpage uses WebUSB to jailbreak a connected Rabbit R1 device.");
+print("This webpage uses WebSerial to jailbreak a connected Rabbit R1 device.");
 print("On success, it'll spawn a root shell on TCP port 1337 (not even telnet, super bare-bones).");
 print("If you don't know what that is or why you'd want it, this isn't for you.");
 print("DISCLAIMER: Consider this a developer preview, may brick your device, etc. etc.");
