@@ -143,32 +143,33 @@ uintptr_t get_offset_by_name(const char *name)
 		pl_printf(TAG "ERROR: no such pattern '%s'\n", name);
 		return 0;
 	}
+	const struct pattern * const cptn = ptn;
 	uintptr_t res = 0;
-	for (uintptr_t i=LK_BASE; i < LK_END - ptn->pattern_len; i += ptn->alignment) {
+	for (uintptr_t i=LK_BASE; i < LK_END - cptn->pattern_len; i += cptn->alignment) {
 		int success = 1;
-		if ((ptn->alignment & 3) == 0) { // faster word-aligned scanning
-			uint8_t *pattern = __builtin_assume_aligned(ptn->pattern, 4);
-			uint8_t *caremap = __builtin_assume_aligned(ptn->caremap, 4);
+		if ((cptn->alignment & 3) == 0) { // faster word-aligned scanning
+			uint8_t *pattern = __builtin_assume_aligned(cptn->pattern, 4);
+			uint8_t *caremap = __builtin_assume_aligned(cptn->caremap, 4);
 			uint8_t *data = __builtin_assume_aligned((void*)i, 4);
-			for (uintptr_t j=0; j < ptn->pattern_len; j+=4) {
+			for (uintptr_t j=0; j < cptn->pattern_len; j+=4) {
 				if ((*(uint32_t*)(data+j) & *(uint32_t*)(caremap+j)) != *(uint32_t*)(pattern+j)) {
 					success = 0;
 					break;
 				};
 			}
-		} else if ((ptn->alignment & 1) == 0) { // fast-ish half-word-aligned scanning
-			uint8_t *pattern = __builtin_assume_aligned(ptn->pattern, 4);
-			uint8_t *caremap = __builtin_assume_aligned(ptn->caremap, 4);
+		} else if ((cptn->alignment & 1) == 0) { // fast-ish half-word-aligned scanning
+			uint8_t *pattern = __builtin_assume_aligned(cptn->pattern, 4);
+			uint8_t *caremap = __builtin_assume_aligned(cptn->caremap, 4);
 			uint8_t *data = __builtin_assume_aligned((void*)i, 2);
-			for (uintptr_t j=0; j < ptn->pattern_len; j+=2) {
+			for (uintptr_t j=0; j < cptn->pattern_len; j+=2) {
 				if ((*(uint16_t*)(data+j) & *(uint16_t*)(caremap+j)) != *(uint16_t*)(pattern+j)) {
 					success = 0;
 					break;
 				};
 			}
 		} else {
-			for (uintptr_t j=0; j < ptn->pattern_len; j++) {
-				if ((*(uint8_t*)(i+j) & ptn->caremap[j]) != ptn->pattern[j]) {
+			for (uintptr_t j=0; j < cptn->pattern_len; j++) {
+				if ((*(uint8_t*)(i+j) & cptn->caremap[j]) != cptn->pattern[j]) {
 					success = 0;
 					break;
 				};
@@ -178,7 +179,7 @@ uintptr_t get_offset_by_name(const char *name)
 		if (res) {
 			pl_printf(TAG "WARNING: pattern '%s' matched more than once (crossing our fingers and using the later match)\n", name);
 		}
-		res = i + ptn->offset;
+		res = i + cptn->offset;
 		pl_printf(TAG "pattern '%s' matched at offset 0x%x\n", name, res);
 	}
 	if (!res) {
