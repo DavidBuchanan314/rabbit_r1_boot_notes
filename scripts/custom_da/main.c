@@ -162,8 +162,8 @@ void main(void)
 	// TODO: maybe log this, and previous value
 	// I'm commenting this out for now because I think it might be
 	// responsible for the random reboots into fastboot mode
-	*g_boot_reason = 0; // regular boot (as opposed to usb charger boot)
-	rtc_mark_bypass_pwrkey(); // force a full boot
+	//*g_boot_reason = 0; // regular boot (as opposed to usb charger boot)
+	//rtc_mark_bypass_pwrkey(); // force a full boot
 
 	printf(TAG "Continuing Preloader main()\n");
 	continue_preloader_main();

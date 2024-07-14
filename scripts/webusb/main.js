@@ -138,7 +138,7 @@ async function go()
 	print("[+] WDT disabled!");
 
 	print("[*] Fetching DA...");
-	let da = await fetch("./da.bin").then(r => r.arrayBuffer());
+	let da = await fetch("./da.bin?v2").then(r => r.arrayBuffer());
 	print("[*] Sending DA...");
 	let dalen = da.byteLength;
 	buffer = await usb_echo(reader, writer, buffer, new Uint8Array([0xd7])); // SEND_DA
