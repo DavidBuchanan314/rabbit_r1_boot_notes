@@ -32,6 +32,8 @@ If you followed an earlier (pre-release) version of these instructions, you'll n
 
 Install [these drivers](https://downloads2.myteracube.com/Tools/Drivers/MediaTek_Preloader_USB_VCOM_Drivers_Setup_Signed.zip) ([source](https://community.myteracube.com/t/teracube-2e-instructions-to-install-factory-software-and-to-reset/4026) - note to Rabbit Inc., you should be making similar provisions for your users.)
 
+(If you previously installed these or similar drivers following the [r1 escape](https://github.com/RabbitHoleEscapeR1/r1_escape) instructions, and it worked, you're already good to go)
+
 Note, the installer will tell you to reboot at the end, but this seems to be unnecessary.
 
 ### macOS Prerequisites
