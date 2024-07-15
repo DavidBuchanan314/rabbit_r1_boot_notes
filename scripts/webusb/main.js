@@ -1,9 +1,7 @@
 /*
-/etc/udev/rules.d/10-rabbitr1.rules
+Like most of the JS I write, this code is disgusting.
 
-ATTR{idProduct}=="2000", ATTR{idVendor}=="0e8d", RUN="/bin/sh -c 'echo %k:1.0 > /sys/bus/usb/drivers/cdc_acm/unbind'"
-
-sudo udevadm control --reload-rules && sudo udevadm trigger
+Maybe I'll refactor it one day, but for now, it does work.
 */
 
 let logdiv = document.getElementById("logpre");
@@ -138,7 +136,7 @@ async function go()
 	print("[+] WDT disabled!");
 
 	print("[*] Fetching DA...");
-	let da = await fetch("./da.bin?v2").then(r => r.arrayBuffer());
+	let da = await fetch("./da.bin?v2").then(r => r.arrayBuffer()); // small enough that we shouldn't need a progress indicator...
 	print("[*] Sending DA...");
 	let dalen = da.byteLength;
 	buffer = await usb_echo(reader, writer, buffer, new Uint8Array([0xd7])); // SEND_DA
@@ -185,15 +183,36 @@ async function go()
 
 	print("[*] Saying hi to DA...");
 	buffer = await usb_echo(reader, writer, buffer, be32enc(0xdeadbeef));
-	print("[*] Loading boot.img... (TODO: loading bar for this lol (it's 22MB))")
-	let bootimg = await fetch("./boot.bin").then(r => r.arrayBuffer());
-	print("[*] Sending boot.img...");
-	let bootlen = bootimg.byteLength;
-	buffer = await usb_echo(reader, writer, buffer, be32enc(bootlen));
 
+	print("[*] Loading boot.img...")
 	let progbar = document.createElement("span");
+	let response = await fetch("./boot.bin", {mode: "no-cors"});
 	logdiv.appendChild(progbar);
 	let proglen = 50;
+	let bootlen = parseInt(response.headers.get("Content-Length"), 10);
+	let loaded = 0;
+	const bootres = new Response(new ReadableStream({
+		async start(controller) {
+			const reader = response.body.getReader();
+			for (;;) {
+				const {done, value} = await reader.read();
+				if (done) break;
+				loaded += value.byteLength;
+				//console.log(loaded, bootlen);
+				let progsteps = Math.floor(proglen * (loaded / bootlen));
+				progbar.innerText = "[" + "#".repeat(progsteps) + "-".repeat(proglen-progsteps) + "] " + Math.floor(100 * (loaded / bootlen)) + "%\n"
+				controller.enqueue(value);
+			}
+			controller.close();
+		},
+	}));
+	let bootimg = await bootres.arrayBuffer();
+
+	print("[*] Sending boot.img...");
+	buffer = await usb_echo(reader, writer, buffer, be32enc(bootlen));
+
+	progbar = document.createElement("span");
+	logdiv.appendChild(progbar);
 
 	bytestowrite = bootlen;
 	pos = 0;
