@@ -136,7 +136,7 @@ async function go()
 	print("[+] WDT disabled!");
 
 	print("[*] Fetching DA...");
-	let da = await fetch("./da.bin?v2").then(r => r.arrayBuffer()); // small enough that we shouldn't need a progress indicator...
+	let da = await fetch("./da.bin?v3").then(r => r.arrayBuffer()); // small enough that we shouldn't need a progress indicator...
 	print("[*] Sending DA...");
 	let dalen = da.byteLength;
 	buffer = await usb_echo(reader, writer, buffer, new Uint8Array([0xd7])); // SEND_DA
@@ -243,11 +243,9 @@ print("On success, it'll spawn a root shell on TCP port 1337 (not even telnet, s
 print("If you don't know what that is or why you'd want it, this isn't for you.");
 print("DISCLAIMER: Consider this a developer preview, may brick your device, etc. etc.");
 print("");
-print("Credits to bkerler/mtkclient, ng-dst/flashable-android-rootkit, LuigiVampa92/unlocked-bootloader-backdoor-demo. Writeup coming soon-ish!");
-print("");
 print("1. Plug your R1 into your PC using a USB cable.");
 print("2. Power off your R1.");
 print("3. Click the \"connect\" button on this page.");
-print("4. Power on your R1. As it turns on, you should see it on the connection menu.");
+print("4. After several seconds, your R1 should turn itself back on (the screen stays off, though). You'll then see it on the connection menu.");
 print("5. Select the device (\"MT65xx Preloader\") as fast as possible (You have about 3 seconds).");
 print("");

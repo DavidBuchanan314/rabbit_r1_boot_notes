@@ -1,6 +1,6 @@
-# RabbitOS Jailbreak Instructions
+# Carroot (RabbitOS Jailbreak) Instructions
 
-These instructions are for the WebSerial Jailbreak script, which is live [here](https://retr0.id/stuff/r1_jailbreak/).
+These instructions are for the "carroot" WebSerial Jailbreak script, which is live [here](https://retr0.id/stuff/r1_jailbreak/).
 
 The jailbreak itself is "tethered", meaning it does not persist between reboots. Everything stays in-memory, which makes it harder to brick your device etc. That said, this is a highly experimental tool, use at your own risk, bla bla bla.
 
@@ -45,13 +45,16 @@ No special instructions. It Just Works™
 1. Plug your R1 into your PC using a USB cable.
 2. Power off your R1.
 3. Click the "connect" button on the webpage.
-4. Power on your R1. As it turns on, you should see it on the connection menu.
+4. After several seconds, your R1 should turn itself back on (the screen stays off, though). You'll then see it on the connection menu.
 5. Select the device ("MT65xx Preloader") as fast as possible (You have about 3 seconds).
 
 If it works, you should see log messages all the way up to `[+] It worked???!?`, and the device will
 start booting normally.
-During boot, you should see a "Congratulations" message appear in a very tiny font
-at the bottom of the screen.
+
+During boot, you should see a "BOOTING CARROOT" message appear in a very tiny font
+at the bottom of the screen, along with some ASCII art.
+
+If something goes wrong and you want to try from scratch, reboot the device, refresh the webpage, and start agin.
 
 ## Post-Install
 
