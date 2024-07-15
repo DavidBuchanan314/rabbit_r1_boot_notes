@@ -90,6 +90,12 @@ setprop persist.sys.test_harness true
 
 I have a feeling this will stop working in future RabbitOS updates, but it works for now.
 
+### Upgrading to Telnet
+
+Execute the `scripts/drop_busybox.sh` script from this repo, with your R1's IP address as argument. It'll connect to the existing TCP shell and upload a busybox binary, then start busybox's telnetd on port 31337.
+
+You should then be able to get a more ergonomic root shell via `telnet rabbit_ip_here 31337`
+
 ### Misecellaneous Useful Commands
 
 Open settings:
