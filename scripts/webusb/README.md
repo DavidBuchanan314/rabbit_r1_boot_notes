@@ -2,6 +2,8 @@
 
 These instructions are for the "carroot" WebSerial Jailbreak script, which is live [here](https://retr0.id/stuff/r1_jailbreak/).
 
+Technical writeup [here](https://www.da.vidbuchanan.co.uk/blog/r1-jailbreak.html).
+
 The jailbreak itself is "tethered", meaning it does not persist between reboots. Everything stays in-memory, which makes it harder to brick your device etc. That said, this is a highly experimental tool, use at your own risk, bla bla bla.
 
 If you perform the [Post-Install](#Post-Install) steps, you can enable ADB, giving you a more ergonomic (but non-root) shell and the ability to install APKs, etc.
