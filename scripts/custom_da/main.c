@@ -53,11 +53,11 @@ ok, we need to write some code to receive data from USB into memory
 #define TAG "[BOOTKIT] "
 
 /* Preloader offsets */
-int (*const printf)(const char *fmt, ...) = (void*)(0x2267fc+1);
+int (*const printf)(const char *fmt, ...) = (void*)(0x226808+1);
 void (*const bldr_jump64)(unsigned int, unsigned int, unsigned int) = (void*)(0x21ce18+1);
-unsigned int *const trambopoline = (void*)0x21d230; // where bldr_jump64 would normally get called from
+unsigned int *const trambopoline = (void*)0x21d236; // where bldr_jump64 would normally get called from
 unsigned int *const g_boot_reason = (void*)0x010a6c4;
-void (*const rtc_mark_bypass_pwrkey)(void) = (void*)(0x227414+1);
+void (*const rtc_mark_bypass_pwrkey)(void) = (void*)(0x227420+1);
 
 struct comport_ops {
     int (*send)(void *buf, uint32_t len);
