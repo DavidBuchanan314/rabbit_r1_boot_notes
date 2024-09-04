@@ -33,7 +33,7 @@ sounds like a safer place to hook.
 */
 
 // preloader offsets (hardcoded for now, maybe should be passed in from main.c)
-int (*const pl_printf)(const char *fmt, ...) = (void*)(0x2267fc+1);
+int (*const pl_printf)(const char *fmt, ...) = (void*)(0x226808+1);
 // TODO: custom uart?
 
 #define TAG "[BOOTKIT][LK_HOOK] "

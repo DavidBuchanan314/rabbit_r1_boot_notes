@@ -19,4 +19,4 @@ continue_preloader_main:
 	ldr r10, =0x1097cc
 	ldr r9, =printf
 	ldr r9, [r9]
-	ldr pc, =(0x21d0ee+1)
+	ldr pc, =(0x21d0f4+1)
