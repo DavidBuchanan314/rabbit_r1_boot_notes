@@ -55,7 +55,7 @@ ok, we need to write some code to receive data from USB into memory
 /* Preloader offsets */
 int (*const printf)(const char *fmt, ...) = (void*)(0x226808+1);
 void (*const bldr_jump64)(unsigned int, unsigned int, unsigned int) = (void*)(0x21ce18+1);
-unsigned int *const trambopoline = (void*)0x21d236; // where bldr_jump64 would normally get called from
+unsigned int *const trambopoline = (void*)0x21d234; // where bldr_jump64 would normally get called from
 unsigned int *const g_boot_reason = (void*)0x010a6c4;
 void (*const rtc_mark_bypass_pwrkey)(void) = (void*)(0x227420+1);
 
@@ -156,8 +156,9 @@ void main(void)
 
 	printf(TAG "Installing bldr_jump64 hook...\n");
 
-	trambopoline[0] = 0x47184b00; // ldr r3, [pc, #0];  bx r3
-	trambopoline[1] = (unsigned int)hook_bldr_jump64;
+	trambopoline[0] = 0xbf004640; // mov r0, r8; nop;
+	trambopoline[1] = 0x47184b00; // ldr r3, [pc, #0];  bx r3
+	trambopoline[2] = (unsigned int)hook_bldr_jump64;
 
 	// TODO: maybe log this, and previous value
 	// I'm commenting this out for now because I think it might be
